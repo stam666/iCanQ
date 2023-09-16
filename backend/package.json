@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "./dist/start.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node dist/start.js",
+    "start:dev": "nodemon start.ts",
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.3",
+    "@grpc/proto-loader": "^0.7.9",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^20.6.2",
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2"
+  }
+}

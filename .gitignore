@@ -1,0 +1,37 @@
+# Ignore node_modules directory for backend (Node.js/TypeScript)
+backend/node_modules/
+
+# Ignore TypeScript build artifacts
+backend/dist/
+backend/*.js
+backend/*.js.map
+
+# Ignore generated documentation
+backend/docs/
+
+# Ignore TypeScript configuration files
+tsconfig.json
+tsconfig.build.json
+
+# Ignore environment-specific files
+*.env
+*.env.local
+*.env.development
+*.env.production
+
+# Ignore editor-specific files (e.g., Visual Studio Code)
+.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore temporary files
+*.swp
+*~
+
+# Ignore user-specific files
+*.user
+*.suo
