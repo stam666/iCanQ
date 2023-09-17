@@ -50,12 +50,10 @@ const login: RequestHandler = async (req, res) => {
   try {
     const { input, password } = req.body;
     if (!input || !password) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          msg: "Please provide an email or username and password",
-        });
+      return res.status(400).json({
+        success: false,
+        msg: "Please provide an email or username and password",
+      });
     }
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const isEmail = emailPattern.test(input);
@@ -88,7 +86,7 @@ const login: RequestHandler = async (req, res) => {
 };
 
 const getMe: RequestHandler = async (expressReq, res) => {
-  const req = expressReq as RequestCustom
+  const req = expressReq as RequestCustom;
   const user = await User.findById(req.user.id);
   res.status(200).json({
     success: true,
@@ -96,8 +94,7 @@ const getMe: RequestHandler = async (expressReq, res) => {
   });
 };
 
-
-const logout: RequestHandler = async (req,res) => {
+const logout: RequestHandler = async (req, res) => {
   res.cookie("token", "none", {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
@@ -108,7 +105,7 @@ const logout: RequestHandler = async (req,res) => {
   });
 };
 
-const updateUser: RequestHandler = async (req,res) => {
+const updateUser: RequestHandler = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -121,9 +118,9 @@ const updateUser: RequestHandler = async (req,res) => {
   } catch (error) {
     res.status(400).json({ success: false });
   }
-}
+};
 
-const deleteUser: RequestHandler = async (req,res) => {
+const deleteUser: RequestHandler = async (req, res) => {
   try {
     const user = await User.findByIdAndRemove(req.params.id);
     if (!user) {
@@ -133,7 +130,7 @@ const deleteUser: RequestHandler = async (req,res) => {
   } catch (error) {
     res.status(400).json({ success: false });
   }
-}
+};
 
 export const UserController = {
   getAllUsers,
@@ -142,5 +139,5 @@ export const UserController = {
   getMe,
   logout,
   updateUser,
-  deleteUser
+  deleteUser,
 };
