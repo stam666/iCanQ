@@ -2,10 +2,10 @@ import { RequestHandler, Request } from "express";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/user.model";
 export interface RequestCustom extends Request {
-    user: IUser;
+  user: IUser;
 }
-const protect:RequestHandler = async (expressReq, res, next) => {
-    const req = expressReq as RequestCustom;
+const protect: RequestHandler = async (expressReq, res, next) => {
+  const req = expressReq as RequestCustom;
   let token;
   if (
     req.headers.authorization &&
@@ -41,7 +41,7 @@ const protect:RequestHandler = async (expressReq, res, next) => {
 };
 
 const authorize = (...roles: string[]) => {
-  return (req: any, res:any, next:any) => {
+  return (req: any, res: any, next: any) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
