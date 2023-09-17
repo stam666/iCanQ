@@ -18,8 +18,8 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   const mongoUrl =
     process.env.MONGODB_URL || 'mongodb://localhost:27017/testDB';
-  mongoose.connect(mongoUrl);
 
+  mongoose.connect(mongoUrl);
   app.use((req, res, next) => {
     // maybe authenticate in gateway
     next();
