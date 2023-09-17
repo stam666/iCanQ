@@ -1,11 +1,13 @@
 import express from "express";
 import { Server } from "http";
 import { AddressInfo } from "net";
+import { IOrderItem } from "../grpc/orders/orderTypes";
 import mongoose from "mongoose";
 import userRouter from "../rest/users/route";
 import client from "./grpc-cilent/order.client";
+import { ServerErrorResponse } from "@grpc/grpc-js";
 
-//Change dotenv path -> I have trouble with this. So, I use the absolute path instead.
+//Change dotenv path -> I have a trouble with this. So, I use the absolute path instead.
 
 require("dotenv").config({
   path: "/Users/yaninchaya/Desktop/SoftwareArch/iCanQ/backend/src/config.env",
@@ -30,34 +32,38 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use("/users", userRouter);
 
   // test gRPC
-  app.get("/", (req, res) => {
-    client.getAllOrder(null, (err: any, data: any) => {
-      if (!err) {
-        console.log(data.orders);
-        res.send(data.orders);
-      } else {
-        console.log(err);
-      }
-    });
-  });
+  // app.get("/", (req, res) => {
+  //   client.getAllOrder(null, (err: any, data: any) => {
+  //     if (!err) {
+  //       console.log(data.orders);
+  //       res.send(data.orders);
+  //     } else {
+  //       console.log(err);
+  //     }
+  //   });
+  // });
 
   //get One Order
-  app.get("/getOrder/:id", (req, res) => {
-    client.get({ orderId: req.params.id }, (err: any, data: any) => {
-      if (!err) {
-        console.log(data);
-        res.send(data);
-      } else {
-        if (err.details === "Not found") {
-          res.status(404).send("Order Not Found : " + req.params.id);
+  app.get("/getOrder/:id", (req: express.Request, res: express.Response) => {
+    client.get(
+      { orderId: req.params.id },
+      (err: ServerErrorResponse, data: IOrderItem) => {
+        if (!err) {
+          console.log(data);
+          res.send(data);
+        } else {
+          if (err.details === "Not found") {
+            res.status(404).send("Order Not Found : " + req.params.id);
+          } else {
+            res.status(500).send("Failed to get Order : " + req.params.id);
+          }
         }
-        res.status(500).send("Failed to get Order : " + req.params.id);
       }
-    });
+    );
   });
 
   //add Order
-  app.post("/addOrder", (req, res) => {
+  app.post("/addOrder", (req: express.Request, res: express.Response) => {
     let newOrderItem = {
       orderId: req.body.orderId,
       userId: req.body.userId,
@@ -67,33 +73,43 @@ const startGateway = async (): Promise<AddressInfo> => {
       orderStatus: req.body.orderStatus,
       totalPrice: req.body.totalPrice,
     };
-    client.insert(newOrderItem, (err: any, data: any) => {
-      if (!err) {
-        console.log("New Order created successfully", data.orderId);
-        res.send("New Order created successfully : " + data.orderId);
-      } else {
-        if (err.details === "Insert error") {
-          res.status(500).send("Failed to create new Order");
+    client.insert(
+      newOrderItem,
+      (err: ServerErrorResponse, data: IOrderItem) => {
+        if (!err) {
+          console.log("New Order created successfully", data.orderId);
+          res.send("New Order created successfully : " + data.orderId);
+        } else {
+          if (err.details === "Insert error") {
+            res.status(500).send("Failed to create new Order");
+          }
         }
       }
-    });
+    );
   });
 
   // remove Order
-  app.post("/removeOrder/:id", (req, res) => {
-    client.remove({ orderId: req.params.id }, (err: any, _: any) => {
-      if (!err) {
-        console.log("orderItem removed successfully", req.params.id);
-        res.send("Order Delete Succesfully");
-      } else {
-        if (err.details === "Not found") {
-          res.status(404).send("Order Not Found : " + req.params.id);
+  app.post(
+    "/removeOrder/:id",
+    (req: express.Request, res: express.Response) => {
+      client.remove(
+        { orderId: req.params.id },
+        (err: ServerErrorResponse, _: any) => {
+          if (!err) {
+            console.log("orderItem removed successfully", req.params.id);
+            res.send("Order Delete Succesfully");
+          } else {
+            if (err.details === "Not found") {
+              res.status(404).send("Order Not Found : " + req.params.id);
+            } else {
+              res.status(500).send("Failed to remove Order");
+              console.log(err);
+            }
+          }
         }
-        res.status(500).send("Failed to remove Order");
-        console.log(err);
-      }
-    });
-  });
+      );
+    }
+  );
   const port = process.env.PORT || 8080;
   connection = app.listen(port, () => {});
   const APIAdress = connection.address() as AddressInfo;

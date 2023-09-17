@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 import Order from "./models/order.model";
+import { ISingleOrderRequest, IOrderItem } from "./orderTypes";
+import { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
 const PROTO_PATH = "../../../config/protos/order.proto";
 
 // Change dotenv path
@@ -29,7 +31,7 @@ const server = new grpc.Server();
 
 // Add service to gRPC server
 server.addService(orderProto.OrderService.service, {
-  // GET All Order -> This service is needed to be fixed.
+  // GET All Order -> This service needs to be fixed.
   getAllOrder: async (_: any, callback: any) => {
     const orders = await Order.find();
 
@@ -45,7 +47,10 @@ server.addService(orderProto.OrderService.service, {
     callback(null, { response });
   },
   // GET One Order
-  get: async (call: any, callback: any) => {
+  get: async (
+    call: ServerUnaryCall<ISingleOrderRequest, IOrderItem>,
+    callback: sendUnaryData<IOrderItem>
+  ) => {
     const order = await Order.findById(
       new mongoose.Types.ObjectId(call.request.orderId)
     );
@@ -54,8 +59,8 @@ server.addService(orderProto.OrderService.service, {
       callback(null, {
         ...order.toObject(),
         orderId: order._id.toString(),
-        createdTime: order.createdTime.toString(),
-        pickupTime: order.pickupTime.toString(),
+        createdTime: order.createdTime,
+        pickupTime: order.pickupTime,
       });
     } else {
       callback({
@@ -66,7 +71,10 @@ server.addService(orderProto.OrderService.service, {
   },
 
   // Create Order
-  insert: async (call: any, callback: any) => {
+  insert: async (
+    call: ServerUnaryCall<IOrderItem, IOrderItem>,
+    callback: sendUnaryData<IOrderItem>
+  ) => {
     const now = new Date();
     const newOrderItem = new Order({
       userId: call.request.userId,
@@ -89,20 +97,12 @@ server.addService(orderProto.OrderService.service, {
       });
     }
   },
-  //   update: async (call: any, callback: any) => {
-  //     const { id, ...body } = call.request;
-  //     const order = await Order.findByIdAndUpdate(id, body, { new: true });
 
-  //     if (order) {
-  //       callback(null, order);
-  //     } else {
-  //       callback({
-  //         code: grpc.status.NOT_FOUND,
-  //         details: "Not Found",
-  //       });
-  //     }
-  //   },
-  remove: async (call: any, callback: any) => {
+  // Remove an order
+  remove: async (
+    call: ServerUnaryCall<ISingleOrderRequest, any>,
+    callback: sendUnaryData<any>
+  ) => {
     const existingOrderItem = await Order.findById(
       new mongoose.Types.ObjectId(call.request.orderId)
     );

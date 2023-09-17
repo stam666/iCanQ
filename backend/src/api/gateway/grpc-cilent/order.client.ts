@@ -1,5 +1,4 @@
-const PROTO_PATH = "./order.proto";
-
+const PROTO_PATH = "./src/config/protos/order.proto";
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 
