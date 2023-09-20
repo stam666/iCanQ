@@ -4,13 +4,11 @@ import { AddressInfo } from "net";
 import { IOrderItem } from "../grpc/orders/orderTypes";
 import mongoose from "mongoose";
 import userRouter from "../rest/users/route";
-import client from "./grpc-cilent/order.client";
+import client from "./grpc-client/order.client";
 import { ServerErrorResponse } from "@grpc/grpc-js";
 
-//Change dotenv path -> I have a trouble with this. So, I use the absolute path instead.
-
 require("dotenv").config({
-  path: "/Users/yaninchaya/Desktop/SoftwareArch/iCanQ/backend/src/config.env",
+  path: "./config.env",
 });
 
 let connection: Server;
@@ -32,16 +30,16 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use("/users", userRouter);
 
   // test gRPC
-  // app.get("/", (req, res) => {
-  //   client.getAllOrder(null, (err: any, data: any) => {
-  //     if (!err) {
-  //       console.log(data.orders);
-  //       res.send(data.orders);
-  //     } else {
-  //       console.log(err);
-  //     }
-  //   });
-  // });
+  app.get("/", (req, res) => {
+    client.getAllOrder(null, (err: any, data: any) => {
+      if (!err) {
+        console.log(data.orders);
+        res.send(data.orders);
+      } else {
+        console.log(err);
+      }
+    });
+  });
 
   //get One Order
   app.get("/getOrder/:id", (req: express.Request, res: express.Response) => {
@@ -88,27 +86,61 @@ const startGateway = async (): Promise<AddressInfo> => {
     );
   });
 
+  // Update Order
+  app.put("/updateOrder/:id", (req: any, res: any) => {
+    const orderId = req.params.id;
+
+    // Create an object with the updated order data based on the request body
+    const updatedOrderItem = {
+      orderId,
+      userId: req.body.userId,
+      restaurantId: req.body.restaurantId,
+      queueNumber: req.body.queueNumber,
+      orderLines: req.body.orderLines,
+      orderStatus: req.body.orderStatus,
+      totalPrice: req.body.totalPrice,
+    };
+
+    console.log(updatedOrderItem);
+
+    client.update(
+      updatedOrderItem,
+      (err: ServerErrorResponse, data: IOrderItem) => {
+        if (!err) {
+          console.log("Order updated successfully", data.orderId);
+          res.send("Order updated successfully : " + data.orderId);
+        } else {
+          if (err.details === "Not found") {
+            res.status(404).send("Order Not Found : " + orderId);
+          } else {
+            res.status(500).send("Failed to update Order : " + orderId);
+          }
+        }
+      }
+    );
+  });
+
   // remove Order
   app.post(
     "/removeOrder/:id",
-    (req: express.Request, res: express.Response) => {
+    (req: express.Request, res: express.Response) => {    
       client.remove(
-        { orderId: req.params.id },
-        (err: ServerErrorResponse, _: any) => {
-          if (!err) {
-            console.log("orderItem removed successfully", req.params.id);
-            res.send("Order Delete Succesfully");
+      { orderId: req.params.id },
+      (err: ServerErrorResponse, _: any) => {
+        if (!err) {
+          console.log("orderItem removed successfully", req.params.id);
+          res.send("Order Delete Succesfully");
+        } else {
+          if (err.details === "Not found") {
+            res.status(404).send("Order Not Found : " + req.params.id);
           } else {
-            if (err.details === "Not found") {
-              res.status(404).send("Order Not Found : " + req.params.id);
-            } else {
-              res.status(500).send("Failed to remove Order");
-              console.log(err);
-            }
+            res.status(500).send("Failed to remove Order");
+            console.log(err);
           }
         }
-      );
-    }
+      }
+    );
+  }
   );
   const port = process.env.PORT || 8080;
   connection = app.listen(port, () => {});

@@ -7,7 +7,7 @@ interface IOrder extends Document {
   createdTime: Date;
   pickupTime: Date;
   queueNumber: number;
-  orderLines: Record<string, number>; // dict of menuId: amount
+  orderLines: Map<string, number>; // dict of menuId: amount
   orderStatus: string;
   totalPrice: number;
 }

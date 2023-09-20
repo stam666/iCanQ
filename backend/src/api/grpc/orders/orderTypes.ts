@@ -1,11 +1,11 @@
 export interface IOrderItem {
-  orderId?: string;
+  orderId: string;
   userId: string;
   restaurantId: string;
-  createdTime?: Date;
-  pickupTime?: Date;
+  createdTime: Date;
+  pickupTime: Date;
   queueNumber: number;
-  orderLines: Map<string, number>[];
+  orderLines: Map<string, number>;
   orderStatus: string;
   totalPrice: number;
 }

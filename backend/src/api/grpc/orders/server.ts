@@ -6,7 +6,7 @@ const PROTO_PATH = "../../../config/protos/order.proto";
 
 // Change dotenv path
 require("dotenv").config({
-  path: "../../../config.env",
+  path: "../../../../config.env",
 });
 
 // Connect to MongoDB
@@ -94,6 +94,50 @@ server.addService(orderProto.OrderService.service, {
       callback({
         code: grpc.status.INTERNAL,
         details: "Insert Error",
+      });
+    }
+  },
+
+  // Update an order
+  update: async (
+    call: ServerUnaryCall<IOrderItem, IOrderItem>,
+    callback: sendUnaryData<IOrderItem>
+  ) => {
+    const orderId = call.request.orderId;
+    const updatedData = call.request;
+
+    try {
+      const updatedOrder = await Order.findByIdAndUpdate(
+        orderId,
+        { $set: updatedData },
+        { new: true }
+      );
+
+      if (updatedOrder) {
+        // Convert updatedOrder to IOrderItem format
+        const updatedOrderItem: IOrderItem = {
+          orderId: updatedOrder._id.toString(),
+          userId: updatedOrder.userId,
+          restaurantId: updatedOrder.restaurantId,
+          queueNumber: updatedOrder.queueNumber,
+          orderLines: updatedOrder.orderLines as any, // Type assertion to map format
+          orderStatus: updatedOrder.orderStatus,
+          totalPrice: updatedOrder.totalPrice,
+          createdTime: updatedOrder.createdTime,
+          pickupTime: updatedOrder.pickupTime,
+        };
+
+        callback(null, updatedOrderItem);
+      } else {
+        callback({
+          code: grpc.status.NOT_FOUND,
+          details: "Not found",
+        });
+      }
+    } catch (error) {
+      callback({
+        code: grpc.status.INTERNAL,
+        details: "Internal Server Error",
       });
     }
   },
