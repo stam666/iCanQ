@@ -1,7 +1,7 @@
 import express from "express";
 import { Server } from "http";
 import { AddressInfo } from "net";
-import { IOrderItem } from "../grpc/orders/orderTypes";
+import { IOrderItem, IOrderList } from "../grpc/orders/orderTypes";
 import mongoose from "mongoose";
 import userRouter from "../rest/users/route";
 import client from "./grpc-client/order.client";
@@ -30,11 +30,11 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use("/users", userRouter);
 
   // test gRPC
-  app.get("/", (req, res) => {
-    client.getAllOrder(null, (err: any, data: any) => {
+  app.get("/", (req: express.Request, res: express.Response) => {
+    client.getAllOrder(null, (err: ServerErrorResponse, data: IOrderList) => {
       if (!err) {
-        console.log(data.orders);
-        res.send(data.orders);
+        console.log(data);
+        res.send(data);
       } else {
         console.log(err);
       }

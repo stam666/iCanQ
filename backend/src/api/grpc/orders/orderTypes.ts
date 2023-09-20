@@ -12,3 +12,7 @@ export interface IOrderItem {
 export interface ISingleOrderRequest {
   orderId: string;
 }
+
+export interface IOrderList {
+  orders: IOrderItem[];
+}

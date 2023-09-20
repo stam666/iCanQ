@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 import Order from "./models/order.model";
-import { ISingleOrderRequest, IOrderItem } from "./orderTypes";
+import { ISingleOrderRequest, IOrderItem, IOrderList } from "./orderTypes";
 import { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
 const PROTO_PATH = "../../../config/protos/order.proto";
 
@@ -32,19 +32,36 @@ const server = new grpc.Server();
 // Add service to gRPC server
 server.addService(orderProto.OrderService.service, {
   // GET All Order -> This service needs to be fixed.
-  getAllOrder: async (_: any, callback: any) => {
-    const orders = await Order.find();
+  // getAllOrder: async (_: any, callback: any) => {
+  //   const orders = await Order.find();
 
-    const response = orders.map((order) => ({
-      userId: order.userId,
-      restaurantId: order.restaurantId,
-      queueNumber: order.queueNumber,
-      orderLines: order.orderLines,
-      orderStatus: order.orderStatus,
-      totalPrice: order.totalPrice,
-    }));
-    console.log(response);
-    callback(null, { response });
+  //   const response = orders.map((order) => ({
+  //     userId: order.userId,
+  //     restaurantId: order.restaurantId,
+  //     queueNumber: order.queueNumber,
+  //     orderLines: order.orderLines,
+  //     orderStatus: order.orderStatus,
+  //     totalPrice: order.totalPrice,
+  //   }));
+  //   console.log(response);
+  //   callback(null, { response });
+  // },
+  getAllOrder: async (_: any, callback: sendUnaryData<IOrderList>) => {
+    try {
+      const orderDocs = await Order.find();
+      const orders = orderDocs.map((order) => ({
+        ...order.toObject(),
+        orderId: order._id.toString(),
+        createdTime: order.createdTime,
+        pickupTime: order.pickupTime,
+      }));
+      callback(null, { orders });
+    } catch (error) {
+      callback({
+        code: grpc.status.INTERNAL,
+        details: "Internal Server Error",
+      });
+    }
   },
   // GET One Order
   get: async (
