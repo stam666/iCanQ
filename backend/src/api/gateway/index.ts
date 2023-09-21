@@ -18,9 +18,11 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+
   const mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
   mongoose.connect(mongoUrl);
   console.log("Connected to MongoDB on " + mongoUrl);
+
   app.use((req, res, next) => {
     // maybe authenticate in gateway
     next();
