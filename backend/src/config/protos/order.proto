@@ -1,25 +1,31 @@
 syntax ="proto3";
 
 service OrderService {
-    rpc GetAll(Empty) returns (MenuList) {}
-    rpc Get (MenuId) returns (MenuItem){}
-    rpc Insert (MenuItem) returns (MenuItem) {}
-    rpc Update (MenuItem) returns (MenuItem) {}
-    rpc Remove (MenuId) returns (Empty) {}
+    rpc GetAllOrder(Empty) returns (OrderList) {}
+    rpc Get (OrderId) returns (OrderItem){}
+    rpc Insert (OrderItem) returns (OrderItem) {}
+    rpc Update (OrderItem) returns (OrderItem) {}
+    rpc Remove (OrderId) returns (Empty) {}
 }
 
 message Empty{}
 
-message MenuItem {
-    string id =1;
-    string name=2;
-    int32 price=3;
+message OrderItem {
+    optional string orderId =1;
+    string userId=2;
+    string restaurantId=3;
+    int32 queueNumber=4;
+    map<string,int32> orderLines=9;
+    string orderStatus=5;
+    int32 totalPrice=6;
+    optional string createdTime=7;
+    optional string pickupTime=8;
 }
 
-message MenuList{
-    repeated MenuItem menu=1;
+message OrderList{
+    repeated OrderItem orders=1;
 }
 
-message MenuId{
-    string id=1;
+message OrderId{
+    string orderId=1;
 }
