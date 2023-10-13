@@ -7,9 +7,10 @@ import userRouter from "../rest/users/route";
 import restaurantRouter from "../rest/restaurants/route";
 import client from "./grpc-client/order.client";
 import { ServerErrorResponse } from "@grpc/grpc-js";
+import menuRouter from "../rest/menus/route";
 
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 
 let connection: Server;
@@ -30,6 +31,9 @@ const startGateway = async (): Promise<AddressInfo> => {
   // mock proxy userService
   app.use("/users", userRouter);
   app.use("/restaurants", restaurantRouter);
+  //mock proxy menuService
+  app.use("/menu", menuRouter);
+
   // test gRPC
   app.get("/", (req: express.Request, res: express.Response) => {
     client.getAllOrder(null, (err: ServerErrorResponse, data: IOrderList) => {
@@ -143,6 +147,7 @@ const startGateway = async (): Promise<AddressInfo> => {
       );
     }
   );
+
   const port = process.env.PORT || 8080;
   connection = app.listen(port, () => {});
   const APIAdress = connection.address() as AddressInfo;
