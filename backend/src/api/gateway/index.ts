@@ -10,7 +10,7 @@ import { ServerErrorResponse } from "@grpc/grpc-js";
 import menuRouter from "../rest/menus/route";
 
 require("dotenv").config({
-  path: "../config.env",
+  path: "./config.env",
 });
 
 let connection: Server;
