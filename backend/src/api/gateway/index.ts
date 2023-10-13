@@ -4,6 +4,7 @@ import { AddressInfo } from "net";
 import { IOrderItem, IOrderList } from "../grpc/orders/orderTypes";
 import mongoose from "mongoose";
 import userRouter from "../rest/users/route";
+import restaurantRouter from "../rest/restaurants/route";
 import client from "./grpc-client/order.client";
 import { ServerErrorResponse } from "@grpc/grpc-js";
 
@@ -18,11 +19,9 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-
   const mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
   mongoose.connect(mongoUrl);
   console.log("Connected to MongoDB on " + mongoUrl);
-
   app.use((req, res, next) => {
     // maybe authenticate in gateway
     next();
@@ -30,7 +29,7 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   // mock proxy userService
   app.use("/users", userRouter);
-
+  app.use("/restaurants", restaurantRouter);
   // test gRPC
   app.get("/", (req: express.Request, res: express.Response) => {
     client.getAllOrder(null, (err: ServerErrorResponse, data: IOrderList) => {
@@ -125,24 +124,24 @@ const startGateway = async (): Promise<AddressInfo> => {
   // remove Order
   app.post(
     "/removeOrder/:id",
-    (req: express.Request, res: express.Response) => {    
+    (req: express.Request, res: express.Response) => {
       client.remove(
-      { orderId: req.params.id },
-      (err: ServerErrorResponse, _: any) => {
-        if (!err) {
-          console.log("orderItem removed successfully", req.params.id);
-          res.send("Order Delete Succesfully");
-        } else {
-          if (err.details === "Not found") {
-            res.status(404).send("Order Not Found : " + req.params.id);
+        { orderId: req.params.id },
+        (err: ServerErrorResponse, _: any) => {
+          if (!err) {
+            console.log("orderItem removed successfully", req.params.id);
+            res.send("Order Delete Succesfully");
           } else {
-            res.status(500).send("Failed to remove Order");
-            console.log(err);
+            if (err.details === "Not found") {
+              res.status(404).send("Order Not Found : " + req.params.id);
+            } else {
+              res.status(500).send("Failed to remove Order");
+              console.log(err);
+            }
           }
         }
-      }
-    );
-  }
+      );
+    }
   );
   const port = process.env.PORT || 8080;
   connection = app.listen(port, () => {});
