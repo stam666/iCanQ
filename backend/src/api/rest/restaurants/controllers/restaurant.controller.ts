@@ -135,9 +135,76 @@ const setRestaurantStatus: RequestHandler = async (req, res) => {
   }
 };
 
+const fetchMenuData = async (menuId: string) => {
+  try {
+    const response = await axios.get(`/menu/${menuId}`, {
+      proxy: {
+        host: process.env.HOST || "localhost",
+        port: Number(process.env.PORT) || 8000,
+      },
+    });
+
+    if (response.status === 400) {
+      return null;
+    }
+
+    return {
+      menuId: response.data.data.id,
+      name: response.data.data.name,
+      price: response.data.data.price,
+    };
+  } catch (error) {
+    console.error(`Error fetching data for ID ${menuId}: ${error.message}`);
+    return null;
+  }
+};
+
+const getAllRestaurantMenu: RequestHandler = async (req, res) => {
+  try {
+    const restaurantId = req.params.id;
+    const restaurant = await Restaurant.findById(restaurantId);
+
+    if (!restaurant) {
+      res.status(404).json({
+        success: false,
+        data: "Restaurant not found",
+      });
+      return;
+    }
+    const menuList = restaurant.menu;
+    const results = [];
+    Promise.all(menuList.map((menuId) => fetchMenuData(menuId)))
+      .then((menuData) => {
+        // Filter out any null values which indicate errors
+        const validMenuData = menuData.filter((data) => data !== null);
+        results.push(...validMenuData);
+
+        console.log(results);
+        res.status(200).json({
+          success: true,
+          data: results,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching menu data:", error);
+        res.status(500).json({
+          success: false,
+          data: "Something went wrong",
+        });
+        return;
+      });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      data: "Something went wrong",
+    });
+  }
+};
+
 export const RestaurantController = {
   createRestaurant,
   editRestaurantInfo,
   getRestaurantStatus,
   setRestaurantStatus,
+  getAllRestaurantMenu,
 };
