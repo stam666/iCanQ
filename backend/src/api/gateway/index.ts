@@ -4,6 +4,7 @@ import { AddressInfo } from "net";
 import { IOrderItem, IOrderList } from "../grpc/orders/orderTypes";
 import mongoose from "mongoose";
 import userRouter from "../rest/users/route";
+import restaurantRouter from "../rest/restaurants/route";
 import client from "./grpc-client/order.client";
 import { ServerErrorResponse } from "@grpc/grpc-js";
 import menuRouter from "../rest/menus/route";
@@ -22,7 +23,6 @@ const startGateway = async (): Promise<AddressInfo> => {
   const mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
   mongoose.connect(mongoUrl);
   console.log("Connected to MongoDB on " + mongoUrl);
-
   app.use((req, res, next) => {
     // maybe authenticate in gateway
     next();
@@ -32,7 +32,7 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use("/users", userRouter);
   //mock proxy menuService
   app.use("/menu", menuRouter)
-
+  app.use("/restaurants", restaurantRouter);
   // test gRPC
   app.get("/", (req: express.Request, res: express.Response) => {
     client.getAllOrder(null, (err: ServerErrorResponse, data: IOrderList) => {
