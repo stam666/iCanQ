@@ -30,6 +30,7 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   // mock proxy userService
   app.use("/users", userRouter);
+  app.use("/restaurants", restaurantRouter);
   //mock proxy menuService
   app.use("/menu", menuRouter)
   app.use("/restaurants", restaurantRouter);
@@ -148,7 +149,7 @@ const startGateway = async (): Promise<AddressInfo> => {
   );
 
   const port = process.env.PORT || 8080;
-  connection = app.listen(port, () => { });
+  connection = app.listen(port, () => {});
   const APIAdress = connection.address() as AddressInfo;
   return APIAdress;
 };
