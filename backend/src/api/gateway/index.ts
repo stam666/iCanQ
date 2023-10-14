@@ -33,7 +33,7 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use("/restaurants", restaurantRouter);
   //mock proxy menuService
   app.use("/menu", menuRouter)
-  app.use("/restaurants", restaurantRouter);
+
   // test gRPC
   app.get("/", (req: express.Request, res: express.Response) => {
     client.getAllOrder(null, (err: ServerErrorResponse, data: IOrderList) => {
