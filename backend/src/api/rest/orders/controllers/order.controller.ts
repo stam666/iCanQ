@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import axios from "axios";
-import client from "../order.client";
+import client from "../clients/order.client";
 import { ServerErrorResponse } from "@grpc/grpc-js";
 import { IOrderItem } from "../../../../shared/common/interfaces/orderTypes";
 import { RequestCustom } from "../../users/middleware/user.middleware";
