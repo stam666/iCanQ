@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node dist/start.js",
     "start:dev": "nodemon start.ts",
+    "grpc": "node dist/src/api/grpc/orders/server.js",
+    "grpc:dev": "nodemon src/api/grpc/orders/server.ts",
     "build": "tsc",
     "build:watch": "tsc --watch"
   },
