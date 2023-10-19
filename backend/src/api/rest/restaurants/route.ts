@@ -7,9 +7,8 @@ restaurantRouter
   .patch("/setRestaurantStatus/:id", RestaurantController.setRestaurantStatus)
   .get("/getRestaurantStatus/:id", RestaurantController.getRestaurantStatus)
   .get("/getAllRestaurantMenu/:id", RestaurantController.getAllRestaurantMenu);
-restaurantRouter.post(
-  "/createRestaurant/",
-  RestaurantController.createRestaurant
-);
+restaurantRouter
+  .post("/createRestaurant/", RestaurantController.createRestaurant)
+  .get("/", RestaurantController.getAllRestaurants);
 
 export default restaurantRouter;
