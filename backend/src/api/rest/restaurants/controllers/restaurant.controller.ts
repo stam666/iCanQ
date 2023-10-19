@@ -16,6 +16,29 @@ async function getUserId(req: any) {
   const userId = response.data.data._id;
   return userId;
 }
+const getAllRestaurants: RequestHandler = async (req, res) => {
+  try {
+    const allRestaurants = await Restaurant.find();
+
+    if (allRestaurants.length === 0) {
+      res.status(404).json({
+        success: false,
+        data: "No restaurant found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      data: allRestaurants,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      data: "Something went wrong",
+    });
+  }
+};
 const createRestaurant: RequestHandler = async (req, res) => {
   try {
     const { restaurantName, restaurantInfo, openStatus } = req.body;
@@ -202,6 +225,7 @@ const getAllRestaurantMenu: RequestHandler = async (req, res) => {
 };
 
 export const RestaurantController = {
+  getAllRestaurants,
   createRestaurant,
   editRestaurantInfo,
   getRestaurantStatus,
