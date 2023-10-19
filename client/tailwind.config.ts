@@ -26,6 +26,9 @@ const config: Config = {
           DEFAULT: "#FFFFFF",
           "normal-hover": "#D9D9D9",
           "normal-active": "#BABABA",
+          dark: "#595959",
+          "dark-hover": "#404040",
+          "dark-active": "#1C1C1C",
         },
         primary: {
           DEFAULT: "#ED714D",
