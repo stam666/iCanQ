@@ -10,8 +10,8 @@ backend/*.js.map
 backend/docs/
 
 # Ignore TypeScript configuration files
-tsconfig.json
-tsconfig.build.json
+# tsconfig.json
+# tsconfig.build.json
 
 # Ignore environment-specific files
 *.env
