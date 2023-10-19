@@ -1,10 +1,19 @@
 ﻿# iCanQ
 
-## Run Protobuf for dev
-
-- Run command **yarn start:dev** in /backend
-- Run command **yarn grpc:dev** in /backend
-
+## Run backend in /backend
+- Run command for dev
+  ```
+  yarn start:dev
+  yarn grpc:dev
+  ```
+  
+- Run command for prod
+  ```
+  yarn build
+  yarn start
+  yarn grpc
+  ```
+  
 ## **For anyone who get import error things**
 
 Please try add <mark>tsconfig.json</mark> in backend folder
