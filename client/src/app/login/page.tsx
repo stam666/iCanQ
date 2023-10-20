@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import React from "react"; // Import React
+import authService from "@/libs/userService"; // Import login function from userService.tsx
+import { useRouter } from "next/router";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -16,10 +18,22 @@ export default function LoginPage() {
     setPassword(e.target.value);
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     // Handle the sign-in logic or print the inputs
+    setUsername("");
+    setPassword("");
     console.log("Username/Email Address:", username);
     console.log("Password:", password);
+    
+    try {
+      const res = await authService.login(username, password);
+      console.log(res);
+      const router = useRouter()
+      router.push('/')
+    } catch (error) {
+
+      console.error(error);
+    }
   };
 
   return (
@@ -28,8 +42,7 @@ export default function LoginPage() {
         <div className="text-center">Sign in</div>
         <div className="text-center text-4xl">Welcome Back!</div>
       </div>
-
-      <div className="flex p-0 px-8 flex-col items-center gap-8 self-stretch">
+      <div className="flex pt-8 px-8 flex-col items-center gap-8 self-stretch">
         <div className="flex flex-col items-start gap-4 self-stretch">
           <div className="p-4 items-start gap-2 self-stretch rounded-2xl border border-white-normal-hover bg-white">
             <input

@@ -6,6 +6,7 @@ import userRouter from "../rest/users/route";
 import restaurantRouter from "../rest/restaurants/route";
 import menuRouter from "../rest/menus/route";
 import orderRouter from "../rest/orders/route";
+import cors from "cors";
 
 require("dotenv").config({
   path: "./config.env",
@@ -17,6 +18,13 @@ const startGateway = async (): Promise<AddressInfo> => {
   const app = express();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use(cors(
+    {
+      origin: 'http://localhost:3000',
+      credentials: true
+    }
+  ))
 
   const mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
   mongoose.connect(mongoUrl);
