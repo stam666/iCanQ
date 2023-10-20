@@ -1,14 +1,14 @@
 import axios from "axios";
 
-async function login(email: string, password: string) {
+async function login(input: string, password: string) {
   const res = await axios.post(
     process.env.NEXT_PUBLIC_API_URL + "/users/auth/login",
     {
-      email,
+      input,
       password,
     },
     {
-        withCredentials: true,
+      withCredentials: true,
     }
   );
 

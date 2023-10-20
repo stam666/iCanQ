@@ -1,8 +1,8 @@
-"use client";
-import { useState } from "react";
-import React from "react"; // Import React
+"use client"
+
+import React, { useState } from "react";
 import authService from "@/libs/userService"; // Import login function from userService.tsx
-import { useRouter } from "next/router";
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -17,21 +17,17 @@ export default function LoginPage() {
     // Specify the event type
     setPassword(e.target.value);
   };
+  const router = useRouter()
 
   const handleSignIn = async () => {
     // Handle the sign-in logic or print the inputs
     setUsername("");
     setPassword("");
-    console.log("Username/Email Address:", username);
-    console.log("Password:", password);
-    
+
     try {
       const res = await authService.login(username, password);
-      console.log(res);
-      const router = useRouter()
       router.push('/')
     } catch (error) {
-
       console.error(error);
     }
   };
