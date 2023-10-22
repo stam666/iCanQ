@@ -1,54 +1,67 @@
 "use client";
-import RestaurantCard from "@/components/RestaurantCard";
-import SearchBar from "@/components/SearchBar";
-import restaurantService from "@/libs/restaurantService";
-import { IRestaurant } from "@/models/restaurant.model";
-import SettingsIcon from "@mui/icons-material/Settings";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import Link from "next/link";
-import { Suspense } from "react";
 
-export default async function Home() {
-  const restaurants = await restaurantService.getAllRestaurants();
+import React, { useState } from "react";
+import authService from "@/libs/userService"; 
+import { useRouter } from "next/navigation";
+
+export default function LoginPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+  const router = useRouter();
+
+  const handleSignIn = async () => {
+    setUsername("");
+    setPassword("");
+
+    try {
+      const res = await authService.login(username, password);
+      router.push("/home");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center p-8 bg-gradient-to-tr from-brown-light-active via-white to-brown-light-active space-y-8">
-      <div className="w-full">
-        <div className="flex flex-row justify-between">
-          <div className="space-y-2">
-            <p className="text-xl font-medium">Hi, Jimmy</p>
-            <p>Are you hungry?</p>
-          </div>
-          <button
-            className={
-              "border-2 border-primary rounded-full text-primary px-3 h-fit py-1 flex flex-row justify-center space-x-2 hover:bg-primary hover:text-white transition-all duration-200"
-            }
-            onClick={() => {}}
-          >
-            <SettingsIcon />
-            <div className="font-medium">Log out</div>
-          </button>
-        </div>
-        <button className="mt-4 p-4 font-medium text-white w-full bg-primary rounded-full flex flex-row justify-between hover:bg-brown-dark-hover transition-all duration-30">
-          <div className="">History</div>
-          <ArrowForwardIcon />
-        </button>
+    <main className="flex min-h-screen flex-col items-center bg-white space-y-8">
+      <div className="w-full flex flex-col items-center gap-12 p-16 pb-14 font-normal text-white bg-primary rounded-b-3xl">
+        <div className="text-center">Sign in</div>
+        <div className="text-center text-4xl">Welcome Back!</div>
       </div>
-      <div className="w-full space-y-6 flex flex-col">
-        <div className="text-xl font-medium text-left">Restaurant</div>
-        <SearchBar />
-        <Suspense fallback={<p>Loading ...</p>}>
-          {restaurants.map((restaurant: IRestaurant) => (
-            <Link key={restaurant._id} href={`/restaurants/${restaurant._id}`}>
-              <RestaurantCard
-                name={restaurant.restaurantName}
-                description={restaurant.restaurantInfo}
-                imgSrc={"/images/mcdonald.jpeg"}
-                status={restaurant.openStatus}
-                // rating={restaurants.rating}
-              />
-            </Link>
-          ))}
-        </Suspense>
+      <div className="flex pt-8 px-8 flex-col items-center gap-8 self-stretch">
+        <div className="flex flex-col items-start gap-4 self-stretch">
+          <div className="p-4 items-start gap-2 self-stretch rounded-2xl border border-white-normal-hover bg-white">
+            <input
+              type="text"
+              placeholder="Username/Email Address"
+              value={username}
+              onChange={handleUsernameChange}
+              className="text-white-dark-hover"
+            />
+          </div>
+          <div className="p-4 items-start gap-2 self-stretch rounded-2xl border border-white-normal-hover bg-white">
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              className="text-white-dark-hover"
+            />
+          </div>
+        </div>
+        <button
+          className="p-4 justify-center self-stretch rounded-2xl bg-primary"
+          onClick={handleSignIn}
+        >
+          <span className="text-white text-16 font-normal">Sign In</span>
+        </button>
       </div>
     </main>
   );
