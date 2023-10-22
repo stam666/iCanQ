@@ -14,10 +14,10 @@ message OrderItem {
     optional string orderId =1;
     string userId=2;
     string restaurantId=3;
-    int32 queueNumber=4;
+    optional int32 queueNumber=4;
     map<string,int32> orderLines=9;
-    string orderStatus=5;
-    int32 totalPrice=6;
+    optional string orderStatus=5;
+    optional int32 totalPrice=6;
     optional string createdTime=7;
     optional string pickupTime=8;
 }

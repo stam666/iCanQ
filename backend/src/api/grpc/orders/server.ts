@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 import { OrderController } from "./controllers/order.controller";
+import { MqService } from "./services/mq.service";
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
 
@@ -17,6 +18,8 @@ const startGrpcServer = async () => {
   mongoose.set("strictQuery", true);
   mongoose.connect(MONGO_URL);
   console.log("Connected to MongoDB on " + MONGO_URL);
+
+  MqService.amqpConnect();
 
   var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
     keepCase: true,

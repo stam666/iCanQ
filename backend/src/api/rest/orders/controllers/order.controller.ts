@@ -35,27 +35,16 @@ const getOrder: RequestHandler = async (req, res) => {
 
 const addOrder: RequestHandler = async (req: RequestCustom, res) => {
   const userId = req.user.id;
-  const orderDetails = req.body as IOrderItem;
 
-  const totalPrice = req.body.orderLines.reduce(
-    (total: number, orderLine: Map<string, number>) => {
-      return (
-        total +
-        orderLine.get("quantity")! * orderLine.get("price")! * (1 - 0.1)
-      );
-    },
-    0
-  );
-
-  let newOrderItem = {
+  let newOrderItem: IOrderItem = {
     userId,
     restaurantId: req.body.restaurantId,
     queueNumber: req.body.queueNumber,
     orderLines: req.body.orderLines,
-    orderStatus: "Pending",
-    totalPrice,
-  } as IOrderItem;
-
+    totalPrice: req.body.totalPrice,
+    orderStatus: "Pending"
+  };
+  
   client.insert(newOrderItem, (err: ServerErrorResponse, data: IOrderItem) => {
     if (!err) {
       console.log("New Order created successfully", data.orderId);
