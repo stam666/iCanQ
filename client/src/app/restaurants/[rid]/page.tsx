@@ -11,8 +11,8 @@ export default async function RestaurantDetailPage({
 }: {
   params: { rid: string };
 }) {
-  // const restaurantMenu = await restaurantService.getRestaurantMenu(params.rid);
-  // console.log(restaurantMenu);
+  const restaurantMenu = await restaurantService.getRestaurantMenu(params.rid);
+  console.log(restaurantMenu);
   return (
     <main className="h-screen bg-white p-8">
       <div className="h-1/4 w-full -m-8 z-0 bg-primary absolute"></div>
@@ -39,7 +39,7 @@ export default async function RestaurantDetailPage({
           </div>
         </div>
         <div className="text-2xl font-medium">Menu</div>
-        {/* {restaurantMenu.map((menu: IMenu) => (
+        {restaurantMenu.map((menu: IMenu) => (
           // Insert Link Component Here!
           <MenuCard
             key={menu.menuId}
@@ -47,7 +47,7 @@ export default async function RestaurantDetailPage({
             price={menu.price}
             imgSrc={"/images/food1.jpeg"}
           />
-        ))} */}
+        ))}
       </div>
     </main>
   );

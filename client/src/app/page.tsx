@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function Home() {
-  // const restaurants = await restaurantService.getAllRestaurants();
+  const restaurants = await restaurantService.getAllRestaurants();
   return (
     <main className="flex min-h-screen flex-col items-center p-8 bg-gradient-to-tr from-brown-light-active via-white to-brown-light-active space-y-8">
       <div className="w-full">
@@ -37,7 +37,7 @@ export default async function Home() {
         <div className="text-xl font-medium text-left">Restaurant</div>
         <SearchBar />
         <Suspense fallback={<p>Loading ...</p>}>
-          {/* {restaurants.map((restaurant: IRestaurant) => (
+          {restaurants.map((restaurant: IRestaurant) => (
             <Link key={restaurant._id} href={`/restaurants/${restaurant._id}`}>
               <RestaurantCard
                 name={restaurant.restaurantName}
@@ -47,7 +47,7 @@ export default async function Home() {
                 // rating={restaurants.rating}
               />
             </Link>
-          ))} */}
+          ))}
         </Suspense>
       </div>
     </main>
