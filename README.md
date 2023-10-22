@@ -13,6 +13,11 @@
   yarn start
   yarn grpc
   ```
+## Run client in /client
+- Run command for dev
+  ```
+  yarn start
+  ```
   
 ## **For anyone who get import error things**
 
