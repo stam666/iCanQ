@@ -7,16 +7,13 @@ async function login(input: string, password: string) {
       input,
       password,
     },
-    {
-      withCredentials: true,
-    }
   );
 
   if (!res) {
     throw new Error("Failed to login");
   }
 
-  return await res.data.data;
+  return await res.data;
 }
 
 const authService = { login };
