@@ -3,12 +3,37 @@
 import InputText from "@/components/inputText";
 import Link from "next/link";
 import { useState } from "react";
-export default function InformationPage() {
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useContext } from "react";
+import { userContext } from "../page";
+
+import { useRouter } from "next/navigation";
+import userService from "../../../libs/userService";
+import React from "react";
+
+type Props = {
+  callbackUrl?: string;
+};
+
+export default function InformationPage(this: any, props: Props) {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isCustomer, setIsCustomer] = useState(true); // [true, false]
   const [isRestaurant, setIsRestaurant] = useState(false); // [true, false]
   const [role, setRole] = useState("customer"); // ["customer", "restaurant"
+  const context = useContext(userContext);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (context) {
+      setUsername(context.username);
+      setEmail(context.email);
+      setPassword(context.password);
+    }
+  }, [context]);
 
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(e.target.value);
@@ -26,11 +51,40 @@ export default function InformationPage() {
       setIsRestaurant(true);
     }
   };
+  const handleSignUp = async () => {
+    try {
+      console.log(username, email, password, firstName, lastName, role);
+      const signUp = await userService.signUp(
+        email,
+        username,
+        firstName,
+        lastName,
+        role,
+        password
+      );
+
+      setFirstName("");
+      setLastName("");
+      setRole("customer");
+      console.log(signUp);
+      router.push("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-white space-y-8">
       <div className="w-full flex flex-col items-center gap-12 p-16 pb-14 font-normal text-white bg-primary rounded-b-3xl">
-        <div className="text-center">Sign Up</div>
+        <div className="flex flex-row w-full">
+          <div className="flex justify-start w-1/3">
+            <Link href="/signup" className="">
+              <ArrowBackIosNewIcon />
+            </Link>
+          </div>
+          <div className="w-1/3 text-center">Sign Up</div>
+        </div>
+
         <div className="text-center text-4xl">Information Detail</div>
       </div>
       <div className="flex pt-8 px-8 flex-col items-center gap-8 self-stretch">
@@ -76,12 +130,12 @@ export default function InformationPage() {
               </label>
             </div>
           </div>
-          <Link
-            href="/login"
-            className="p-4 justify-center self-stretch rounded-2xl bg-primary border-2 text-center"
+          <button
+            className="p-4 justify-center self-stretch rounded-2xl bg-primary"
+            onClick={handleSignUp}
           >
             <span className="text-white text-16 font-normal">Sign Up</span>
-          </Link>
+          </button>
         </div>
       </div>
     </main>
