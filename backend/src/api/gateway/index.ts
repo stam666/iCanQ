@@ -6,6 +6,7 @@ import userRouter from "../rest/users/route";
 import restaurantRouter from "../rest/restaurants/route";
 import menuRouter from "../rest/menus/route";
 import orderRouter from "../rest/orders/route";
+import cors from "cors";
 import { MqService } from "./services/mq.service";
 import { SocketsService } from "./services/socket.service";
 import { Queue } from "../../shared/common/interfaces/orderTypes";
@@ -28,6 +29,13 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use(cors(
+    {
+      origin: 'http://localhost:3000',
+      credentials: true
+    }
+  ))
 
   app.use("/users", userRouter);
   app.use("/restaurants", restaurantRouter);
