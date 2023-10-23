@@ -12,7 +12,6 @@ export default async function RestaurantDetailPage({
   params: { rid: string };
 }) {
   const restaurantMenu = await restaurantService.getRestaurantMenu(params.rid);
-  console.log(restaurantMenu);
   return (
     <main className="h-screen bg-white p-8">
       <div className="h-1/4 w-full -m-8 z-0 bg-primary absolute"></div>
