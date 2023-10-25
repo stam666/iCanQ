@@ -4,8 +4,6 @@ import InputText from "@/components/inputText";
 import Link from "next/link";
 import { useState } from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { useContext } from "react";
-import { userContext } from "../page";
 
 import { useRouter } from "next/navigation";
 import userService from "../../../libs/userService";
@@ -24,16 +22,13 @@ export default function InformationPage(this: any, props: Props) {
   const [isCustomer, setIsCustomer] = useState(true); // [true, false]
   const [isRestaurant, setIsRestaurant] = useState(false); // [true, false]
   const [role, setRole] = useState("customer"); // ["customer", "restaurant"
-  const context = useContext(userContext);
   const router = useRouter();
 
   React.useEffect(() => {
-    if (context) {
-      setUsername(context.username);
-      setEmail(context.email);
-      setPassword(context.password);
-    }
-  }, [context]);
+    setUsername(localStorage.getItem("username") || "");
+    setEmail(localStorage.getItem("email") || "");
+    setPassword(localStorage.getItem("password") || "");
+  }, []);
 
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFirstName(e.target.value);
@@ -53,7 +48,6 @@ export default function InformationPage(this: any, props: Props) {
   };
   const handleSignUp = async () => {
     try {
-      console.log(username, email, password, firstName, lastName, role);
       const signUp = await userService.signUp(
         email,
         username,
@@ -66,6 +60,9 @@ export default function InformationPage(this: any, props: Props) {
       setFirstName("");
       setLastName("");
       setRole("customer");
+      localStorage.removeItem("username");
+      localStorage.removeItem("email");
+      localStorage.removeItem("password");
       console.log(signUp);
       router.push("/login");
     } catch (error) {
