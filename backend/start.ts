@@ -1,4 +1,4 @@
-import { startGateway } from "./src/api/gateway/start";
+import { startGateway } from "./src/api/gateway";
 
 const start = async () => {
   try {

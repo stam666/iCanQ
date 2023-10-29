@@ -1,48 +1,69 @@
 import express from "express";
+import cors from "cors";
 import { Server } from "http";
 import { AddressInfo } from "net";
-import mongoose from "mongoose";
-import userRouter from "../rest/users/route";
-import restaurantRouter from "../rest/restaurants/route";
-import menuRouter from "../rest/menus/route";
-import orderRouter from "../rest/orders/route";
-import cors from "cors";
+// import userRouter from "../rest/users/route";
+
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 require("dotenv").config({
   path: "./config.env",
 });
-
 let connection: Server;
 
 const startGateway = async (): Promise<AddressInfo> => {
   const app = express();
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000"],
       credentials: true,
     })
   );
 
-  const mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
-  mongoose.connect(mongoUrl);
-  console.log("Connected to MongoDB on " + mongoUrl);
   app.use((req, res, next) => {
     // maybe authenticate in gateway
     next();
   });
 
-  app.use("/users", userRouter);
-  app.use("/restaurants", restaurantRouter);
-  app.use("/menu", menuRouter);
-  app.use("/order", orderRouter);
+  // USER SERVICE
+  app.use(
+    "/users",
+    createProxyMiddleware({
+      target: `http://localhost:${process.env.USER_SERVICE_PORT}`,
+      pathRewrite: {
+        "^/users": "",
+      },
+    })
+  );
+  // app.use("/users", userRouter);
 
+  /// RESTAURANT SERVICE
+  const restaurantProxy = createProxyMiddleware({
+    target: `http://localhost:${process.env.RESTAURANT_SERVICE_PORT}`,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/restaurants": "",
+    },
+  });
+
+  app.use("/restaurants", restaurantProxy);
+
+  // MENU SERVICE
+  const menuProxy = createProxyMiddleware({
+    target: `http://localhost:${process.env.MENU_SERVICE_PORT}`,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/menu": "",
+    },
+  });
+
+  app.use("/menu", menuProxy);
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   const port = process.env.PORT || 8080;
   connection = app.listen(port, () => {});
   const APIAdress = connection.address() as AddressInfo;
   return APIAdress;
 };
-
-// export { startGateway };
+export { startGateway };
