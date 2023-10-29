@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   callbackUrl?: string;
@@ -9,6 +10,7 @@ type Props = {
 export default function LoginPage(props: Props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -33,6 +35,24 @@ export default function LoginPage(props: Props) {
       console.error(error);
     }
   };
+
+  const linkToSignUp = React.useMemo(() => {
+    const handleLinkToSignUp = () => {
+      try {
+        router.push("/signup");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    return (
+      <span
+        className="text-blue text-sm font-normal underline underline-offset-1"
+        onClick={handleLinkToSignUp}
+      >
+        Sign Up
+      </span>
+    );
+  }, []);
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-white space-y-8">
@@ -63,6 +83,9 @@ export default function LoginPage(props: Props) {
         >
           <span className="text-white text-16 font-normal">Sign In</span>
         </button>
+        <span className="text-normal text-xs font-normal">
+          Don't have an account {linkToSignUp}
+        </span>
       </div>
     </main>
   );
