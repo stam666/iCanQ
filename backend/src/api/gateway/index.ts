@@ -19,12 +19,12 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use(cors(
-    {
-      origin: 'http://localhost:3000',
-      credentials: true
-    }
-  ))
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
 
   const mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
   mongoose.connect(mongoUrl);
@@ -36,8 +36,8 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   app.use("/users", userRouter);
   app.use("/restaurants", restaurantRouter);
-  app.use("/menu", menuRouter)
-  app.use("/order", orderRouter)
+  app.use("/menu", menuRouter);
+  app.use("/order", orderRouter);
 
   const port = process.env.PORT || 8080;
   connection = app.listen(port, () => {});
@@ -45,4 +45,4 @@ const startGateway = async (): Promise<AddressInfo> => {
   return APIAdress;
 };
 
-export { startGateway };
+// export { startGateway };

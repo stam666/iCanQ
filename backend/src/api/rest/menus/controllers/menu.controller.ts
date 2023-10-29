@@ -3,7 +3,7 @@ import { RequestHandler } from "express";
 import Restaurant from "../../restaurants/models/restaurant.model";
 
 require("dotenv").config({
-  path: "./config.env",
+  path: "../../../../config.env",
 });
 
 const config = {
