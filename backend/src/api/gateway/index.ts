@@ -59,6 +59,18 @@ const startGateway = async (): Promise<AddressInfo> => {
   });
 
   app.use("/menu", menuProxy);
+
+  // ORDER SERVICE
+  const orderServiceProxy = createProxyMiddleware({
+    target: `http://localhost:${process.env.ORDER_SERVICE_PORT}`,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/order": "",
+    },
+  });
+
+  app.use("/order", orderServiceProxy);
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   const port = process.env.PORT || 8080;
