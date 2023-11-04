@@ -30,7 +30,7 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use(
     "/users",
     createProxyMiddleware({
-      target: `http://localhost:${process.env.USER_SERVICE_PORT}`,
+      target: `${process.env.USER_SERVICE_URI}`,
       pathRewrite: {
         "^/users": "",
       },
@@ -40,7 +40,7 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   /// RESTAURANT SERVICE
   const restaurantProxy = createProxyMiddleware({
-    target: `http://localhost:${process.env.RESTAURANT_SERVICE_PORT}`,
+    target: `${process.env.RESTAURANT_SERVICE_URI}`,
     changeOrigin: true,
     pathRewrite: {
       "^/restaurants": "",
@@ -51,7 +51,7 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   // MENU SERVICE
   const menuProxy = createProxyMiddleware({
-    target: `http://localhost:${process.env.MENU_SERVICE_PORT}`,
+    target: `${process.env.MENU_SERVICE_URI}`,
     changeOrigin: true,
     pathRewrite: {
       "^/menu": "",
@@ -62,7 +62,7 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   // ORDER SERVICE
   const orderServiceProxy = createProxyMiddleware({
-    target: `http://localhost:${process.env.ORDER_SERVICE_PORT}`,
+    target: `${process.env.ORDER_SERVICE_URI}`,
     changeOrigin: true,
     pathRewrite: {
       "^/order": "",
