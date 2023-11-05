@@ -3,9 +3,11 @@ import {
   IOrderItem,
   IOrderList,
   ISingleOrderRequest,
+  Queue,
 } from '../../../../shared/common/interfaces/orderTypes';
 import Order from '../models/order.model';
 import mongoose from 'mongoose';
+import { MqService } from '../services/mq.service';
 
 var grpc = require('@grpc/grpc-js');
 
@@ -85,13 +87,14 @@ const insert = async (
     restaurantId: call.request.restaurantId,
     createdTime: now,
     pickupTime: now,
-    queueNumber: call.request.queueNumber,
+    queueNumber: call.request.queueNumber ?? 0,
     orderLines: call.request.orderLines,
-    orderStatus: call.request.orderStatus,
-    totalPrice: call.request.totalPrice,
+    orderStatus: call.request.orderStatus ?? "Pending",
+    totalPrice: call.request.totalPrice ?? 100,
   });
   try {
     const result = await newOrderItem.save();
+    MqService.publishOrder(result, Queue.CREATE);
     console.log(result);
     callback(null, { ...call.request, orderId: result._id.toString() });
   } catch (err) {

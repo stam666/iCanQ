@@ -20,7 +20,6 @@ const protect: RequestHandler = async (expressReq, res, next) => {
   }
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-    console.log(decoded);
 
     // Fetch the user based on the decoded token's ID and attach it to the request
     const user: IUser | null = await User.findById(decoded.id);

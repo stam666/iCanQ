@@ -1,43 +1,50 @@
 const mongoose = require("mongoose");
 import { OrderController } from "./controllers/order.controller";
+import { MqService } from "./services/mq.service";
+var grpc = require("@grpc/grpc-js");
+var protoLoader = require("@grpc/proto-loader");
+
 const PROTO_PATH = "./src/shared/proto/order.proto";
 
-// Change dotenv path
 require("dotenv").config({
   path: "./config.env",
 });
 
-// Create gRPC server
-var grpc = require("@grpc/grpc-js");
-var protoLoader = require("@grpc/proto-loader");
+const GRPC_HOST = process.env.GRPC_HOST || "localhost";
+const GRPC_URL = `${GRPC_HOST}:30043`;
+const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
 
-var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  arrays: true,
-});
+const startGrpcServer = async () => {
+  mongoose.set("strictQuery", true);
+  mongoose.connect(MONGO_URL);
+  console.log("Connected to MongoDB on " + MONGO_URL);
 
-var orderProto = grpc.loadPackageDefinition(packageDefinition);
+  MqService.amqpConnect();
 
-const server = new grpc.Server();
+  var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    arrays: true,
+  });
 
-// Add service to gRPC server
-server.addService(orderProto.OrderService.service, {
-  getAllOrder: OrderController.getAllOrder,
-  get: OrderController.get,
-  insert: OrderController.insert,
-  update: OrderController.update,
-  remove: OrderController.remove,
-});
+  var orderProto = grpc.loadPackageDefinition(packageDefinition);
 
-console.log(`Listening on localhost:30043`);
-server.bindAsync(
-  "127.0.0.1:30043",
-  grpc.ServerCredentials.createInsecure(),
-  () => {
+  const server = new grpc.Server();
+
+  server.addService(orderProto.OrderService.service, {
+    getAllOrder: OrderController.getAllOrder,
+    get: OrderController.get,
+    insert: OrderController.insert,
+    update: OrderController.update,
+    remove: OrderController.remove,
+  });
+
+  server.bindAsync(GRPC_URL, grpc.ServerCredentials.createInsecure(), () => {
     server.start();
 
-    console.log("server is running on 127.0.0.1:30043");
-  }
-);
+    console.log(`GRPC server is running on ${GRPC_URL}`);
+  });
+};
+
+startGrpcServer();

@@ -1,6 +1,11 @@
 ﻿# iCanQ
 
 ## Run backend in /backend
+- Run docker-compse for rabbitmq 
+  localhost:15672 user:guest pass:guest
+  ```
+  docker-compose up
+  ```
 - Run command for dev
   ```
   yarn start:dev
