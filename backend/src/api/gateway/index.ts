@@ -10,6 +10,7 @@ import cors from "cors";
 import { MqService } from "./services/mq.service";
 import { SocketsService } from "./services/socket.service";
 import { Queue } from "../../shared/common/interfaces/orderTypes";
+import reviewRouter from "../rest/reviews/route";
 
 require("dotenv").config({
   path: "./config.env",
@@ -41,6 +42,7 @@ const startGateway = async (): Promise<AddressInfo> => {
   app.use("/restaurants", restaurantRouter);
   app.use("/menu", menuRouter)
   app.use("/order", orderRouter)
+  app.use("/review", reviewRouter)
   
   const port = process.env.PORT || 8000;
   httpServer.listen(port, () => {});

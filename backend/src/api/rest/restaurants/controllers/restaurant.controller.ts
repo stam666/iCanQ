@@ -223,7 +223,7 @@ const getAllRestaurantMenu: RequestHandler = async (req, res) => {
     });
   }
 };
-
+export default getUserId;
 export const RestaurantController = {
   getAllRestaurants,
   createRestaurant,
