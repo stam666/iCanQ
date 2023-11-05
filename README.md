@@ -2,10 +2,15 @@
 
 ## :exclamation: **Migrate to microservice announcement**
 
-Since we have migrated each service to be a microservice, we have separated package.json for each service in order to reduce coupling and make each service independent. (Although it might be burdensome to start all the services manually)
+Since we have migrated each service to be a microservice, we have separated package.json for each service in order to reduce coupling and make each service independent.
 
 ## Run backend in /backend
 
+- Run docker-compse for rabbitmq
+  localhost:15672 user:guest pass:guest
+  ```
+  docker-compose up
+  ```
 - Run command for dev
   ```
   yarn start:dev
