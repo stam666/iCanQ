@@ -1,6 +1,6 @@
 import { Server } from "http";
 import { Server as SocketIO, Socket } from "socket.io";
-import Order from "../models/order.model";
+import Order from "../../grpc/orders/models/order.model";
 import { IOrderItem } from "../../../shared/common/interfaces/orderTypes";
 
 interface CustomSocket extends Socket {
