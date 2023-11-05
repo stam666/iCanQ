@@ -6,9 +6,6 @@ async function login(input: string, password: string) {
     {
       input,
       password,
-    },
-    {
-      withCredentials: true,
     }
   );
 
@@ -16,8 +13,33 @@ async function login(input: string, password: string) {
     throw new Error("Failed to login");
   }
 
-  return await res.data.data;
+  return await res.data;
 }
 
-const authService = { login };
+async function signUp(
+  email: string,
+  userName: string,
+  firstName: string,
+  lastName: string,
+  role: string,
+  password: string
+) {
+  const res = await axios.post(
+    process.env.NEXT_PUBLIC_API_URL + "/users/auth/register",
+    {
+      email,
+      userName,
+      firstName,
+      lastName,
+      role,
+      password,
+    }
+  );
+  if (!res) {
+    throw new Error("Failed to sign up");
+  }
+  return await res.data;
+}
+
+const authService = { login, signUp };
 export default authService;
