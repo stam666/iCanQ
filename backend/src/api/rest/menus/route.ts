@@ -1,13 +1,22 @@
-import { Router } from "express";
+import express from "express";
 import { MenuController } from "../menus/controllers/menu.controller";
 
-const menuRouter = Router();
+require("dotenv").config({
+  path: "../../../../config.env",
+});
 
-menuRouter
-  .get("/", MenuController.getAllMenus)
-  .get("/:id", MenuController.getMenu);
-menuRouter.post("/:restaurantId/createMenu", MenuController.createMenu);
-menuRouter.put("/:id", MenuController.updateMenu);
-menuRouter.delete("/:restaurantId/:id", MenuController.deleteMenu);
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const PORT = process.env.MENU_SERVICE_PORT || 8003;
 
-export default menuRouter;
+app.get("/", MenuController.getAllMenus).get("/:id", MenuController.getMenu);
+app.post("/:restaurantId/createMenu", MenuController.createMenu);
+app.put("/:id", MenuController.updateMenu);
+app.delete("/:restaurantId/:id", MenuController.deleteMenu);
+
+app.listen(PORT, () => {
+  console.log(
+    `⚡️[server]: Menu service is running at https://localhost:${PORT}`
+  );
+});
