@@ -4,14 +4,11 @@ import axios from "axios";
 
 async function getUserId(req: any) {
   const config = {
-    // proxy: {
-    //   host: process.env.HOST || "localhost",
-    //   port: Number(process.env.PORT) || 8000,
-    // },
     headers: {
       Authorization: req.headers.authorization,
     },
   };
+
   const response = await axios.get(
     `http://localhost:${process.env.PORT}/users/auth/me`,
     config
@@ -19,6 +16,37 @@ async function getUserId(req: any) {
   const userId = response.data.data._id;
   return userId;
 }
+const getRestaurantByUserId: RequestHandler = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) {
+      res.status(400).json({
+        success: false,
+        data: "Missing user ID",
+      });
+      return;
+    }
+
+    const restaurant = await Restaurant.findOne({ userId: userId });
+    if (!restaurant) {
+      res.status(404).json({
+        success: false,
+        data: "Restaurant not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: restaurant,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      data: "Something went wrong",
+    });
+  }
+};
 const getAllRestaurants: RequestHandler = async (req, res) => {
   try {
     const allRestaurants = await Restaurant.find();
@@ -42,6 +70,7 @@ const getAllRestaurants: RequestHandler = async (req, res) => {
     });
   }
 };
+
 const createRestaurant: RequestHandler = async (req, res) => {
   try {
     const { restaurantName, restaurantInfo, openStatus } = req.body;
@@ -65,7 +94,6 @@ const createRestaurant: RequestHandler = async (req, res) => {
       success: false,
       data: "Something went wrong",
     });
-    console.log(error);
   }
 };
 
@@ -104,8 +132,15 @@ const editRestaurantInfo: RequestHandler = async (req, res) => {
 
 const getRestaurantStatus: RequestHandler = async (req, res) => {
   try {
-    const restaurantId = req.params.id;
+    const restaurantId = req.query.id;
 
+    if (!restaurantId) {
+      res.status(400).json({
+        success: false,
+        data: "Missing restaurant ID",
+      });
+      return;
+    }
     const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
       res.status(404).json({
@@ -165,11 +200,6 @@ const fetchMenuData = async (menuId: string) => {
   try {
     const response = await axios.get(
       `http://localhost:${process.env.PORT}/menu/${menuId}`
-      // , {
-      //   proxy: {
-      //     host: process.env.HOST || "localhost",
-      //     port: Number(process.env.PORT) || 8000,
-      //   },}
     );
 
     if (response.status === 400) {
@@ -237,4 +267,5 @@ export const RestaurantController = {
   getRestaurantStatus,
   setRestaurantStatus,
   getAllRestaurantMenu,
+  getRestaurantByUserId,
 };
