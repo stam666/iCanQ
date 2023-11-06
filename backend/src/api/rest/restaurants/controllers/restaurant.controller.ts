@@ -73,8 +73,7 @@ const getAllRestaurants: RequestHandler = async (req, res) => {
 
 const createRestaurant: RequestHandler = async (req, res) => {
   try {
-    const { restaurantName, restaurantInfo, openStatus } = req.body;
-    const userId = await getUserId(req);
+    const { userId, restaurantName, restaurantInfo, openStatus } = req.body;
     const menu = Array<string>();
 
     const newRestaurant = await Restaurant.create({
@@ -90,6 +89,7 @@ const createRestaurant: RequestHandler = async (req, res) => {
       data: newRestaurant,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
       data: "Something went wrong",
