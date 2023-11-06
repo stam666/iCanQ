@@ -4,15 +4,18 @@ import axios from "axios";
 
 async function getUserId(req: any) {
   const config = {
-    proxy: {
-      host: process.env.HOST || "localhost",
-      port: Number(process.env.PORT) || 8000,
-    },
+    // proxy: {
+    //   host: process.env.HOST || "localhost",
+    //   port: Number(process.env.PORT) || 8000,
+    // },
     headers: {
       Authorization: req.headers.authorization,
     },
   };
-  const response = await axios.get(`/users/auth/me`, config);
+  const response = await axios.get(
+    `http://localhost:${process.env.PORT}/users/auth/me`,
+    config
+  );
   const userId = response.data.data._id;
   return userId;
 }
@@ -160,12 +163,14 @@ const setRestaurantStatus: RequestHandler = async (req, res) => {
 
 const fetchMenuData = async (menuId: string) => {
   try {
-    const response = await axios.get(`/menu/${menuId}`, {
-      proxy: {
-        host: process.env.HOST || "localhost",
-        port: Number(process.env.PORT) || 8000,
-      },
-    });
+    const response = await axios.get(
+      `http://localhost:${process.env.PORT}/menu/${menuId}`
+      // , {
+      //   proxy: {
+      //     host: process.env.HOST || "localhost",
+      //     port: Number(process.env.PORT) || 8000,
+      //   },}
+    );
 
     if (response.status === 400) {
       return null;
@@ -177,6 +182,7 @@ const fetchMenuData = async (menuId: string) => {
       price: response.data.data.price,
     };
   } catch (error) {
+    console.log(error);
     console.error(`Error fetching data for ID ${menuId}: ${error.message}`);
     return null;
   }

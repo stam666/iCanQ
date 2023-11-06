@@ -1,12 +1,11 @@
 import express from "express";
+import cors from "cors";
 import { Server, createServer } from "http";
 import { AddressInfo } from "net";
 import mongoose from "mongoose";
-import userRouter from "../rest/users/route";
-import restaurantRouter from "../rest/restaurants/route";
-import menuRouter from "../rest/menus/route";
-import orderRouter from "../rest/orders/route";
-import cors from "cors";
+// import userRouter from "../rest/users/route";
+
+const { createProxyMiddleware } = require("http-proxy-middleware");
 import { MqService } from "./services/mq.service";
 import { SocketsService } from "./services/socket.service";
 import { Queue } from "../../shared/common/interfaces/orderTypes";
@@ -23,31 +22,69 @@ const startGateway = async (): Promise<AddressInfo> => {
 
   await mongoose.connect(mongoUrl);
   console.log("Connected to MongoDB on " + mongoUrl);
-  
+
   await MqService.amqpConnect();
   await SocketsService.configureSocket(httpServer);
   MqService.assertAndConsumeQueue(Queue.CREATE);
 
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+
+  // USER SERVICE
+  app.use(
+    "/users",
+    createProxyMiddleware({
+      target: `${process.env.USER_SERVICE_URI}`,
+      pathRewrite: {
+        "^/users": "",
+      },
+    })
+  );
+  // app.use("/users", userRouter);
+
+  /// RESTAURANT SERVICE
+  const restaurantProxy = createProxyMiddleware({
+    target: `${process.env.RESTAURANT_SERVICE_URI}`,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/restaurants": "",
+    },
+  });
+
+  app.use("/restaurants", restaurantProxy);
+
+  // MENU SERVICE
+  const menuProxy = createProxyMiddleware({
+    target: `${process.env.MENU_SERVICE_URI}`,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/menu": "",
+    },
+  });
+
+  app.use("/menu", menuProxy);
+
+  // ORDER SERVICE
+  const orderServiceProxy = createProxyMiddleware({
+    target: `${process.env.ORDER_SERVICE_URI}`,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/order": "",
+    },
+  });
+
+  app.use("/order", orderServiceProxy);
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use(cors(
-    {
-      origin: 'http://localhost:3000',
-      credentials: true
-    }
-  ))
-
-  app.use("/users", userRouter);
-  app.use("/restaurants", restaurantRouter);
-  app.use("/menu", menuRouter)
-  app.use("/order", orderRouter)
-  app.use("/review", reviewRouter)
-  
   const port = process.env.PORT || 8000;
   httpServer.listen(port, () => {});
   const APIAdress = httpServer.address() as AddressInfo;
   return APIAdress;
 };
-
 export { startGateway };

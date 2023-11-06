@@ -30,7 +30,7 @@ const configureSocket = async (server: Server) => {
       console.log(`User:${userId} connect to Socket:${socket.id}`);
       socket.join(userId);
       const orders = await Order.find({ userId: userId });
-      socket.emit("orders", {orders: orders, count: orders.length});
+      socket.emit("orders", { orders: orders, count: orders.length });
     });
 
     socket.on("disconnect", () => {
@@ -42,7 +42,9 @@ const configureSocket = async (server: Server) => {
 const triggerUpdateOrder = async (order: IOrderItem) => {
   try {
     const orders = await Order.find({ userId: order.userId });
-    await io.to(order.userId).emit("orders", {orders: orders, count: orders.length});
+    await io
+      .to(order.userId)
+      .emit("orders", { orders: orders, count: orders.length });
     console.log("Order emitted successfully");
   } catch (error) {
     console.error("Error emitting order:", error);

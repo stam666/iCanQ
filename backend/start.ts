@@ -1,4 +1,4 @@
-import { startGateway } from './src/api/gateway';
+import { startGateway } from "./src/api/gateway";
 
 const start = async () => {
   try {
@@ -7,6 +7,6 @@ const start = async () => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 start();

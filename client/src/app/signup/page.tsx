@@ -5,13 +5,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import InputText from "@/components/inputText";
 import Link from "next/link";
-
-export const userContext = createContext({
+createContext({
   username: "",
   email: "",
   password: "",
 });
-
 export default function SignupPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
