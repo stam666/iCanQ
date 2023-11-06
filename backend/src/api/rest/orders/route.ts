@@ -21,9 +21,14 @@ console.log("Connected to MongoDB on " + mongoUrl);
 app
   .get("/", OrderController.getOrders)
   .get("/:id", UserMiddleware.protect, OrderController.getOrder)
-  .post("/", UserMiddleware.protect, OrderController.addOrder)
-  .put("/:id", UserMiddleware.protect, OrderController.updateOrder)
-  .delete("/:id", UserMiddleware.protect, OrderController.removeOrder);
+
+  // wait for full migrate then get userId from middleware instead
+  .get("/myorder/:userId", OrderController.getOrderByUserId)
+  .post("/:userId", OrderController.addOrder)
+  .get("/myrestaurant/:restaurantId", OrderController.getOrderByRestaurantId)
+
+  .put("/:id", OrderController.updateOrder)
+  .delete("/:id", OrderController.removeOrder);
 
 app.listen(PORT, () => {
   console.log(

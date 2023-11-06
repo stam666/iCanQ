@@ -13,6 +13,14 @@ export interface ISingleOrderRequest {
   orderId: string;
 }
 
+export interface IGetOrderByUserIdRequest {
+  userId: string;
+}
+
+export interface IGetOrderByRestaurantIdRequest {
+  restaurantId: string;
+}
+
 export interface IOrderList {
   orders: IOrderItem[];
 }

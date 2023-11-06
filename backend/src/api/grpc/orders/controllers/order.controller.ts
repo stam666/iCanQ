@@ -1,5 +1,7 @@
 import { ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
 import {
+  IGetOrderByRestaurantIdRequest,
+  IGetOrderByUserIdRequest,
   IOrderItem,
   IOrderList,
   ISingleOrderRequest,
@@ -38,6 +40,48 @@ console.log('Connected to MongoDB on ' + process.env.MONGO_URL);
 const getAllOrder = async (_: any, callback: sendUnaryData<IOrderList>) => {
   try {
     const orderDocs = await Order.find();
+    const orders = orderDocs.map((order) => ({
+      ...order.toObject(),
+      orderId: order._id.toString(),
+      createdTime: order.createdTime,
+      pickupTime: order.pickupTime,
+    }));
+    callback(null, { orders });
+  } catch (error) {
+    callback({
+      code: grpc.status.INTERNAL,
+      details: 'Internal Server Error',
+    });
+  }
+};
+
+const getOrderByUserId = async (
+  call: ServerUnaryCall<IGetOrderByUserIdRequest, IOrderList>,
+  callback: sendUnaryData<IOrderList>
+) => {
+  try {
+    const orderDocs = await Order.find({ userId: call.request.userId });
+    const orders = orderDocs.map((order) => ({
+      ...order.toObject(),
+      orderId: order._id.toString(),
+      createdTime: order.createdTime,
+      pickupTime: order.pickupTime,
+    }));
+    callback(null, { orders });
+  } catch (error) {
+    callback({
+      code: grpc.status.INTERNAL,
+      details: 'Internal Server Error',
+    });
+  }
+};
+
+const getOrderByRestaurantId = async (
+  call: ServerUnaryCall<IGetOrderByRestaurantIdRequest, IOrderList>,
+  callback: sendUnaryData<IOrderList>
+) => {
+  try {
+    const orderDocs = await Order.find({ restaurantId: call.request.restaurantId });
     const orders = orderDocs.map((order) => ({
       ...order.toObject(),
       orderId: order._id.toString(),
@@ -170,6 +214,8 @@ const remove = async (
 
 export const OrderController = {
   getAllOrder,
+  getOrderByUserId,
+  getOrderByRestaurantId,
   get,
   insert,
   update,

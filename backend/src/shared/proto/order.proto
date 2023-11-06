@@ -2,6 +2,8 @@ syntax ="proto3";
 
 service OrderService {
     rpc GetAllOrder(Empty) returns (OrderList) {}
+    rpc GetOrderByUserId (UserId) returns (OrderList) {}
+    rpc GetOrderByRestaurantId (RestaurantId) returns (OrderList) {}
     rpc Get (OrderId) returns (OrderItem){}
     rpc Insert (OrderItem) returns (OrderItem) {}
     rpc Update (OrderItem) returns (OrderItem) {}
@@ -28,4 +30,12 @@ message OrderList{
 
 message OrderId{
     string orderId=1;
+}
+
+message UserId{
+    string userId=1;
+}
+
+message RestaurantId{
+    string restaurantId=1;
 }

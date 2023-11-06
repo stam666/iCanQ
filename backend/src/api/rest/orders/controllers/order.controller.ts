@@ -16,6 +16,30 @@ const getOrders: RequestHandler = async (req, res) => {
   });
 };
 
+const getOrderByUserId: RequestHandler = async (req, res) => {
+  const userId = req.params.userId;
+  client.getOrderByUserId({ userId }, (err: ServerErrorResponse, data: IOrderItem[]) => {
+    if (!err) {
+      console.log(data);
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+};
+
+const getOrderByRestaurantId: RequestHandler = async (req, res) => {
+  const restaurantId = req.params.restaurantId;
+  client.getOrderByRestaurantId({ restaurantId }, (err: ServerErrorResponse, data: IOrderItem[]) => {
+    if (!err) {
+      console.log(data);
+      res.send(data);
+    } else {
+      console.log(err);
+    }
+  });
+};
+
 const getOrder: RequestHandler = async (req, res) => {
   const orderId = req.params.id;
 
@@ -34,15 +58,14 @@ const getOrder: RequestHandler = async (req, res) => {
 };
 
 const addOrder: RequestHandler = async (req: RequestCustom, res) => {
-  const userId = req.user.id;
+  // wait for full migrate
+  // const userId = req.user.id; 
+  const userId = req.params.userId;
 
   let newOrderItem: IOrderItem = {
     userId,
     restaurantId: req.body.restaurantId,
-    queueNumber: req.body.queueNumber,
     orderLines: req.body.orderLines,
-    totalPrice: req.body.totalPrice,
-    orderStatus: "Pending"
   };
   
   client.insert(newOrderItem, (err: ServerErrorResponse, data: IOrderItem) => {
@@ -110,6 +133,8 @@ const removeOrder: RequestHandler = async (req, res) => {
 
 export const OrderController = {
   getOrders,
+  getOrderByUserId,
+  getOrderByRestaurantId,
   getOrder,
   addOrder,
   updateOrder,
