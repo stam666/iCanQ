@@ -1,6 +1,26 @@
 import { RequestHandler, Request, Response } from "express";
 import User, { IUser } from "../models/user.model";
 import { RequestCustom } from "../middleware/user.middleware";
+import axios from "axios";
+async function createRestaurant(
+  userId: string,
+  restaurantName: string,
+  restaurantInfo: string,
+  openStatus: boolean
+) {
+  try {
+    await axios.post(`http://localhost:${process.env.PORT}/restaurants/`, {
+      userId: userId,
+      restaurantName: restaurantName,
+      restaurantInfo: restaurantInfo,
+      openStatus: openStatus,
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
 
 const getAllUsers: RequestHandler = async (req, res) => {
   try {
@@ -28,7 +48,17 @@ const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
 
 const register: RequestHandler = async (req, res) => {
   try {
-    const { email, userName, firstName, lastName, role, password } = req.body;
+    const {
+      email,
+      userName,
+      firstName,
+      lastName,
+      role,
+      password,
+      restaurantName,
+      restaurantInfo,
+      openStatus,
+    } = req.body;
     console.log(req.body);
     const user = await User.create({
       email,
@@ -38,6 +68,20 @@ const register: RequestHandler = async (req, res) => {
       role,
       password,
     });
+
+    if (role === "restaurant") {
+      const isSuccess = createRestaurant(
+        user._id,
+        restaurantName,
+        restaurantInfo,
+        openStatus
+      );
+      if (isSuccess) {
+        console.log("Restaurant created");
+      } else {
+        console.log("Restaurant not created");
+      }
+    }
     sendTokenResponse(user, 200, res);
   } catch (err) {
     res.status(400).json({
