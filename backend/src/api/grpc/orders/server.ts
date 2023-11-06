@@ -35,6 +35,7 @@ const startGrpcServer = async () => {
   server.addService(orderProto.OrderService.service, {
     getAllOrder: OrderController.getAllOrder,
     getOrderByUserId: OrderController.getOrderByUserId,
+    getOrderByRestaurantId: OrderController.getOrderByRestaurantId,
     get: OrderController.get,
     insert: OrderController.insert,
     update: OrderController.update,
