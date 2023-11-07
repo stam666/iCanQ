@@ -42,6 +42,7 @@ const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
     _id: user._id,
     name: user.userName,
     email: user.email,
+    role: user.role,
     token,
   });
 };

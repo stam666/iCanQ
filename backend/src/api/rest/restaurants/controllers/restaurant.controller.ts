@@ -259,6 +259,66 @@ const getAllRestaurantMenu: RequestHandler = async (req, res) => {
     });
   }
 };
+
+const updateMenuToRestaurant: RequestHandler = async (req, res) => {
+  try {
+    const isCreate = req.query.isCreate;
+    const restaurantId = req.query.restaurantId;
+    const menuId = req.body.menuId;
+    console.log(isCreate);
+    if (
+      isCreate === undefined ||
+      restaurantId === undefined ||
+      menuId === undefined
+    ) {
+      res.status(400).json({
+        success: false,
+        data: "Missing required field",
+      });
+      return;
+    }
+    if (isCreate === "true") {
+      const updateRestaurantMenu = await Restaurant.findOneAndUpdate(
+        { _id: restaurantId },
+        { $push: { menu: menuId } },
+        { new: true }
+      ).catch((err) => {
+        console.error("Error:", err);
+      });
+
+      console.log(updateRestaurantMenu);
+      if (!updateRestaurantMenu) {
+        res
+          .status(400)
+          .json({ success: false, message: "cannot find the restaurant" });
+      }
+      res.status(200).json({ success: true, data: updateRestaurantMenu });
+    } else {
+      console.log("delete", menuId);
+      const updateRestaurantMenu = await Restaurant.findOneAndUpdate(
+        { _id: restaurantId },
+        { $pull: { menu: menuId } },
+        { new: true }
+      ).catch((err) => {
+        console.error("Error:", err);
+      });
+
+      console.log(updateRestaurantMenu);
+      if (!updateRestaurantMenu) {
+        res
+          .status(400)
+          .json({ success: false, message: "cannot find the restaurant" });
+      }
+      res.status(200).json({ success: true, data: updateRestaurantMenu });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      data: "Something went wrong",
+    });
+  }
+};
 export default getUserId;
 export const RestaurantController = {
   getAllRestaurants,
@@ -268,4 +328,5 @@ export const RestaurantController = {
   setRestaurantStatus,
   getAllRestaurantMenu,
   getRestaurantByUserId,
+  updateMenuToRestaurant,
 };
