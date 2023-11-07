@@ -20,7 +20,8 @@ app
   .patch("/setRestaurantStatus/:id", RestaurantController.setRestaurantStatus)
   .get("/getRestaurantStatus", RestaurantController.getRestaurantStatus)
   .get("/getAllRestaurantMenu/:id", RestaurantController.getAllRestaurantMenu)
-  .get("/getRestaurant", RestaurantController.getRestaurantByUserId);
+  .get("/getRestaurant", RestaurantController.getRestaurantByUserId)
+  .post("/updateMenu", RestaurantController.updateMenuToRestaurant);
 app
   .post("/", RestaurantController.createRestaurant)
   .get("/", RestaurantController.getAllRestaurants);

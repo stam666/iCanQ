@@ -5,33 +5,28 @@ export interface IReview extends Document {
   restaurantId: string;
   userId: string;
   reviewText: string;
-  rating: number; 
+  rating: number;
 }
 
 const reviewSchema: Schema<IReview> = new Schema<IReview>({
   restaurantId: {
     type: String,
     required: true,
-    unique: true,
   },
   userId: {
     type: String,
     required: true,
-    unique: true,
     ref: "User",
   },
   reviewText: {
     type: String,
-    required: true,
+    required: false,
   },
   rating: {
-    type: Number, 
+    type: Number,
     required: true,
   },
 });
 
-const Review: Model<IReview> = mongoose.model<IReview>(
-  "Review",
-  reviewSchema
-);
+const Review: Model<IReview> = mongoose.model<IReview>("Review", reviewSchema);
 export default Review;
