@@ -13,7 +13,7 @@ import { MqService } from "./services/mq.service";
 import { SocketsService } from "./services/socket.service";
 import { Queue } from "resources/interfaces/order.type";
 import { OrderRouter } from "./routes/order.route";
-import { ReviewRouter } from "routes/review.route";
+import { ReviewRouter } from "./routes/review.route";
 
 const app = express();
 const httpServer: Server = createServer(app);
