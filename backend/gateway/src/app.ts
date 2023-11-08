@@ -9,9 +9,9 @@ import { AddressInfo } from "net";
 import mongoose from "mongoose";
 
 const { createProxyMiddleware } = require("http-proxy-middleware");
-import { MqService } from "./services/mq.service";
-import { SocketsService } from "./services/socket.service";
-import { Queue } from "resources/interfaces/order.type";
+// import { MqService } from "./services/mq.service";
+// import { SocketsService } from "./services/socket.service";
+// import { Queue } from "resources/interfaces/order.type";
 import { OrderRouter } from "./routes/order.route";
 import { ReviewRouter } from "./routes/review.route";
 
@@ -37,15 +37,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // USER SERVICE
-app.use(
-  "/users",
-  createProxyMiddleware({
-    target: `${process.env.USER_SERVICE_URI}`,
-    pathRewrite: {
-      "^/users": "",
-    },
-  })
-);
+const userProxy = createProxyMiddleware({
+  target: `${process.env.USER_SERVICE_URI}`,
+  changeOrigin: true,
+  pathRewrite: {
+    "^/users": "",
+  },
+});
+app.use("/users", userProxy);
 // app.use("/users", userRouter);
 
 /// RESTAURANT SERVICE

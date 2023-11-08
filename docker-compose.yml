@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  gateway:
+    restart: always
+    build: ./backend/gateway
+    image: icanq/gateway:1.0.0
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8000:8000"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  rabbitmq_data:
