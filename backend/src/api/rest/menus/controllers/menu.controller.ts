@@ -21,7 +21,7 @@ console.log("Connected to MongoDB on " + mongoUrl);
 async function addMenuToRestaurant(
   isCreate: boolean,
   restaurantId: string,
-  menuId: string
+  menuId: string,
 ) {
   try {
     await axios.post(
@@ -36,7 +36,7 @@ async function addMenuToRestaurant(
           isCreate: isCreate,
           restaurantId: restaurantId,
         },
-      }
+      },
     );
     return true;
   } catch (err) {
@@ -50,7 +50,7 @@ const getMenu: RequestHandler = async (req, res) => {
     const id = req.params.id;
     const menu = await conn.execute("SELECT * FROM menus WHERE id = ? ", [id]);
     if (menu.rows.length == 0) {
-      res.status(400).json({ success: false });
+      return res.status(400).json({ success: false });
     }
     res.status(200).json({
       success: true,
@@ -66,6 +66,7 @@ const getAllMenus: RequestHandler = async (req, res) => {
     const menus = await conn.execute("SELECT * FROM menus");
     res.status(200).json(menus.rows);
   } catch (error) {
+    console.log(error);
     res.status(400).json({});
   }
 };
@@ -77,17 +78,17 @@ const createMenu: RequestHandler = async (req, res) => {
     const isCreate = true;
     const createdMenu = await conn.execute(
       "INSERT INTO menus (name, price) VALUES (?, ?)",
-      [name, price]
+      [name, price],
     );
     const menuId = createdMenu.insertId;
 
     const isAddSuccess = await addMenuToRestaurant(
       isCreate,
       restaurantId,
-      menuId
+      menuId,
     );
     if (!isAddSuccess) {
-      res
+      return res
         .status(400)
         .json({ success: false, message: "cannot find the restaurant" });
     }
@@ -104,10 +105,12 @@ const updateMenu: RequestHandler = async (req, res) => {
     const { price } = req.body;
     const result = await conn.execute(
       "UPDATE menus SET price = ? WHERE id = ?",
-      [price, id]
+      [price, id],
     );
     if (result.rowsAffected == 0) {
-      res.status(400).json({ success: false, message: "cannot find the menu" });
+      return res
+        .status(400)
+        .json({ success: false, message: "cannot find the menu" });
     }
     res.status(200).json({ success: true });
   } catch (error) {
@@ -122,17 +125,19 @@ const deleteMenu: RequestHandler = async (req, res) => {
     const isCreate = false;
     const result = await conn.execute("DELETE FROM menus WHERE id = ?", [id]);
     if (result.rowsAffected == 0) {
-      res.status(400).json({ success: false, message: "cannot find the menu" });
+      return res
+        .status(400)
+        .json({ success: false, message: "cannot find the menu" });
     }
 
     const isDeleteSuccess = await addMenuToRestaurant(
       isCreate,
       restaurantId,
-      id
+      id,
     );
 
     if (!isDeleteSuccess) {
-      res
+      return res
         .status(400)
         .json({ success: false, message: "cannot find the restaurant" });
     }

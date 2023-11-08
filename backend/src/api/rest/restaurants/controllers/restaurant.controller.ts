@@ -11,7 +11,7 @@ async function getUserId(req: any) {
 
   const response = await axios.get(
     `http://localhost:${process.env.PORT}/users/auth/me`,
-    config
+    config,
   );
   const userId = response.data.data._id;
   return userId;
@@ -115,7 +115,7 @@ const editRestaurantInfo: RequestHandler = async (req, res) => {
       {
         restaurantInfo: restaurantInfo,
       },
-      { new: true }
+      { new: true },
     );
     res.status(200).json({
       success: true,
@@ -174,7 +174,7 @@ const setRestaurantStatus: RequestHandler = async (req, res) => {
       {
         openStatus: setStatus,
       },
-      { new: true }
+      { new: true },
     );
     if (!restaurant) {
       res.status(404).json({
@@ -199,7 +199,7 @@ const setRestaurantStatus: RequestHandler = async (req, res) => {
 const fetchMenuData = async (menuId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:${process.env.PORT}/menu/${menuId}`
+      `http://localhost:${process.env.PORT}/menu/${menuId}`,
     );
 
     if (response.status === 400) {
@@ -281,7 +281,7 @@ const updateMenuToRestaurant: RequestHandler = async (req, res) => {
       const updateRestaurantMenu = await Restaurant.findOneAndUpdate(
         { _id: restaurantId },
         { $push: { menu: menuId } },
-        { new: true }
+        { new: true },
       ).catch((err) => {
         console.error("Error:", err);
       });
@@ -298,7 +298,7 @@ const updateMenuToRestaurant: RequestHandler = async (req, res) => {
       const updateRestaurantMenu = await Restaurant.findOneAndUpdate(
         { _id: restaurantId },
         { $pull: { menu: menuId } },
-        { new: true }
+        { new: true },
       ).catch((err) => {
         console.error("Error:", err);
       });
