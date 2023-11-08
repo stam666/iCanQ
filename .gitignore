@@ -3,6 +3,7 @@ node_modules/
 
 # Ignore TypeScript build artifacts
 backend/dist/
+backend/*/dist/
 backend/*.js
 backend/*.js.map
 

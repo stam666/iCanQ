@@ -1,0 +1,45 @@
+syntax ="proto3";
+
+service OrderService {
+    rpc GetAllOrder(Empty) returns (OrderList) {}
+    rpc Get(OrderId) returns (Order){}
+    rpc GetByFilter(OrderFilter) returns (OrderList){}
+    rpc Insert (Order) returns (Order) {}
+    rpc Update (Order) returns (Order) {}
+    rpc Remove (OrderId) returns (Empty) {}
+}
+
+message Empty{}
+
+message Order {
+    optional string _id=1;
+    string userId=2;
+    string restaurantId=3;
+    repeated OrderItem orderItems=4;
+    optional string status=5;
+    optional int32 totalPrice=6;
+    optional string pickupTime=7;
+    optional string createdTime=8;
+    optional string updatedTime=9;
+}
+
+message OrderItem {
+    string menuId=1;
+    string name=2;
+    int32 price=3;
+    int32 amount=4;
+    optional string note=5;
+}
+
+message OrderList{
+    repeated Order orders=1;
+}
+
+message OrderFilter{
+    optional string userId=1;
+    optional string restaurantId=2;
+}
+
+message OrderId{
+    string orderId=1;
+}

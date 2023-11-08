@@ -1,10 +1,5 @@
 import { ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
-import {
-  IOrderItem,
-  IOrderList,
-  ISingleOrderRequest,
-  Queue,
-} from '../../../../shared/common/interfaces/orderTypes';
+
 import Order from '../models/order.model';
 import mongoose from 'mongoose';
 import { MqService } from '../services/mq.service';
@@ -18,22 +13,6 @@ require('dotenv').config({
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost:27017/testDB');
 console.log('Connected to MongoDB on ' + process.env.MONGO_URL);
-
-// GET All Order -> This service needs to be fixed.
-// getAllOrder: async (_: any, callback: any) => {
-//   const orders = await Order.find();
-
-//   const response = orders.map((order) => ({
-//     userId: order.userId,
-//     restaurantId: order.restaurantId,
-//     queueNumber: order.queueNumber,
-//     orderLines: order.orderLines,
-//     orderStatus: order.orderStatus,
-//     totalPrice: order.totalPrice,
-//   }));
-//   console.log(response);
-//   callback(null, { response });
-// },
 
 const getAllOrder = async (_: any, callback: sendUnaryData<IOrderList>) => {
   try {
