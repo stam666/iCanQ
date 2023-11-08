@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-service
+  template:
+    metadata:
+      labels:
+        app: backend-service
+    spec:
+      containers:
+        - name: backend-service
+          image: backends:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MONGO_URL
+              value: mongodb+srv://admin:SajA7iAFs2rn8LBt@cluster0.pfytphq.mongodb.net/ICANQ?retryWrites=true&w=majority
+            - name: PORT
+              value: "8000"
+            - name: USER_SERVICE_URI
+              value: http://user-service:8001
+            - name: RESTAURANT_SERVICE_URI
+              value: http://restaurant-service:8002
+            - name: MENU_SERVICE_URI
+              value: http://menu-service:8003
+            - name: ORDER_SERVICE_URI
+              value: http://order-service:8004
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend-service
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: LoadBalancer
