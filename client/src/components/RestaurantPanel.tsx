@@ -8,20 +8,22 @@ export default async function RestaurantPanel() {
   const restaurants = await restaurantService.getAllRestaurants();
   return (
     <Suspense fallback={<p>Loading ...</p>}>
-      {restaurants.map((restaurant: IRestaurant) => (
-        <Link
-          key={restaurant._id}
-          href={`/restaurants/${restaurant._id}?name=${restaurant.restaurantName}`}
-        >
-          <RestaurantCard
-            name={restaurant.restaurantName}
-            description={restaurant.restaurantInfo}
-            imgSrc={"/images/mcdonald.jpeg"}
-            status={restaurant.openStatus}
-            // rating={restaurants.rating}
-          />
-        </Link>
-      ))}
+      {restaurants.map((restaurant: IRestaurant) =>
+        restaurant.openStatus ? (
+          <Link
+            key={restaurant._id}
+            href={`/restaurants/${restaurant._id}?name=${restaurant.restaurantName}`}
+          >
+            <RestaurantCard
+              name={restaurant.restaurantName}
+              description={restaurant.restaurantInfo}
+              imgSrc={"/images/mcdonald.jpeg"}
+              status={restaurant.openStatus}
+              // rating={restaurants.rating}
+            />
+          </Link>
+        ) : null,
+      )}
     </Suspense>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -11,11 +11,20 @@ export default function LoginPage(props: Props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
+  const { data: session, status } = useSession();
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
-
+  useEffect(() => {
+    if (status === "authenticated" && session?.user.role === "restaurant") {
+      router.push("/myrestaurant");
+    } else if (
+      status === "authenticated" &&
+      session?.user.role === "customer"
+    ) {
+      router.push("/");
+    }
+  }, [session, status]);
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
@@ -23,13 +32,11 @@ export default function LoginPage(props: Props) {
   const handleSignIn = async () => {
     setUsername("");
     setPassword("");
-
     try {
       await signIn("credentials", {
         email: username,
         password: password,
-        redirect: true,
-        callbackUrl: props.callbackUrl ?? "http://localhost:3000",
+        redirect: false,
       });
     } catch (error) {
       console.error(error);

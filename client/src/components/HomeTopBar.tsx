@@ -9,7 +9,11 @@ export default async function HomeTopBar() {
     <div className="flex flex-row justify-between">
       <div className="space-y-2">
         <p className="text-xl font-medium">Hi, {session?.user.name}</p>
-        <p>Are you hungry?</p>
+        <p>
+          {session?.user.role === "restaurant"
+            ? "Let's cook together"
+            : "Are you hungry?"}
+        </p>
       </div>
       <Link href="/api/auth/signout">
         <div

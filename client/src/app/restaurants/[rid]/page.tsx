@@ -32,7 +32,7 @@ export default function RestaurantDetailPage({
   const [isSummary, setIsSummary] = useState(false);
   if (!isSummary)
     return (
-      <main className="h-screen bg-white p-8">
+      <main className="min-h-screen bg-white p-8">
         <div className="h-1/4 w-full -m-8 z-0 bg-primary absolute"></div>
         <div className="relative z-10">
           <div className="flex flex-row justify-between pt-[60px] text-white">
