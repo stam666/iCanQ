@@ -1,13 +1,27 @@
-FROM node:latest
+FROM node:18 AS builder
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock* ./
+COPY package.json yarn.lock ./
 
-RUN yarn install --network-timeout 100000
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
-EXPOSE 8001
+RUN yarn build
 
-CMD [ "npm", "start" ]
+FROM node:18
+
+ENV NODE_ENV production
+USER node
+
+WORKDIR /usr/src/app
+
+COPY package.json yarn.lock ./
+
+RUN yarn install --production --frozen-lockfile
+
+COPY --from=builder /usr/src/app/dist ./dist
+
+EXPOSE 8001
+CMD [ "node", "dist/start.js" ]

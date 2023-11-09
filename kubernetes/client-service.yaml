@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client-service
-          image: clients:latest
+          image: giftnichakul/client:latest
           ports:
             - containerPort: 3000
           env:

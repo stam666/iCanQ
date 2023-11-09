@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend-service
-          image: backends:latest
+          image: giftnichakul/backends:latest
           ports:
             - containerPort: 8000
           env:
