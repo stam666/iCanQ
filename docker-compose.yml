@@ -7,8 +7,22 @@ services:
     image: icanq/gateway:1.0.0
     depends_on:
       - rabbitmq
+      - order-service
     ports:
       - "8000:8000"
+    environment:
+      - MQ_HOST=rabbitmq
+
+  order-service:
+    restart: always
+    build: ./backend/order-service
+    image: icanq/order-service:1.0.0
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8004:8004"
+    environment:
+      - MQ_HOST=rabbitmq
 
   rabbitmq:
     image: rabbitmq:3-management
