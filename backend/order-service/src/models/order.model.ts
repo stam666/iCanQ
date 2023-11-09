@@ -6,7 +6,7 @@ const orderItemsSchema = new Schema<IOrderItem>({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   amount: { type: Number, required: true },
-  note: { type: String, required: true, default: ""},
+  note: { type: String, default: ""},
 });
 
 const orderSchema = new Schema<IOrder>({
