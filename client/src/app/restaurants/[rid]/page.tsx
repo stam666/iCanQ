@@ -1,26 +1,29 @@
 "use client";
 import MenuPanel from "@/components/MenuPanel";
+import ReviewCard from "@/components/ReviewCard";
+import reviewService from "@/libs/reviewService";
 import { IOrder } from "@/models/order.model";
+import { IReview } from "@/models/review.model";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import StarIcon from "@mui/icons-material/Star";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RestaurantDetailPage({
   params,
 }: {
   params: { rid: string };
 }) {
+  //const param = useParams();
   const urlParams = useSearchParams();
   const restaurantName = urlParams.get("name");
   const [cart, setCart] = useState<IOrder[]>([]);
+  const [review, setReview] = useState<IReview[]>([]);
   const totalSum = cart.reduce(
     (accumulator, order) => accumulator + parseInt(order.totalPrice),
-    0,
+    0
   );
   const handleAddToCart = (order: IOrder) => {
     setCart((prevState) => [...prevState, order]);
@@ -29,6 +32,19 @@ export default function RestaurantDetailPage({
     const updatedCart = cart.filter((item) => item.id !== id);
     setCart(updatedCart);
   };
+
+  useEffect(() => {
+    const fetchReview = async () => {
+      try {
+        const review = await reviewService.getReviewRestaurant(params.rid);
+        setReview(review.data);
+      } catch (error) {
+        console.error("Error fetching restaurant review: ", error);
+      }
+    };
+    fetchReview();
+  }, []);
+
   const [isSummary, setIsSummary] = useState(false);
   if (!isSummary)
     return (
@@ -44,20 +60,13 @@ export default function RestaurantDetailPage({
             </div>
             <div></div>
           </div>
-          <div className="bg-white rounded-2xl flex flex-col p-4 shadow-lg space-y-4 mt-8">
-            <div className="bg-brown-light p-2 rounded-lg">
-              Caption is still a caption Caption is still a captionCaption is
-              still a caption Caption is still a caption
-            </div>
-            <div className="flex flex-row justify-between">
-              <div className="flex flex-row space-x-1">
-                <StarIcon className="text-yellow" />
-                <p className="text-white-normal-active">4.5</p>
-                <p className="text-white-dark ">Rating and reviews</p>
-              </div>
-              <KeyboardArrowRightIcon className="text-white-normal-active" />
-            </div>
-          </div>
+          <ReviewCard
+            caption={review[0]?.reviewText || "ยังไม่ได้รับการรีวิว"}
+            star={review[0]?.rating.toString() || "-"}
+            panel={review.length !== 0}
+            nameRestaurant={restaurantName}
+            rid={`${params.rid}`}
+          />
           <div className="text-2xl font-medium mt-8">Menu</div>
           <MenuPanel params={params} addToCart={handleAddToCart} />
         </div>

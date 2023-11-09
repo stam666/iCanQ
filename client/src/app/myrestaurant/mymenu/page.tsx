@@ -1,10 +1,13 @@
 "use client";
+import ReviewCard from "@/components/ReviewCard";
 import InputText from "@/components/inputText";
 import MenuService from "@/libs/menuService";
 import menuService from "@/libs/menuService";
 import restaurantService from "@/libs/restaurantService";
+import reviewService from "@/libs/reviewService";
 import { IMenu } from "@/models/menu.model";
 import { IRestaurant } from "@/models/restaurant.model";
+import { IReview } from "@/models/review.model";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CloseIcon from "@mui/icons-material/Close";
@@ -23,6 +26,8 @@ export default function MyMenuPage() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [restaurantMenu, setRestaurantMenu] = useState<IMenu[]>([]);
   const [isMenuCreated, setIsMenuCreated] = useState<boolean>(false);
+  const [review, setReview] = useState<IReview[]>([]);
+
   useEffect(() => {
     const getMyRestaurant = async () => {
       if (session) {
@@ -42,7 +47,7 @@ export default function MyMenuPage() {
       try {
         if (restaurant) {
           const menu = await restaurantService.getRestaurantMenu(
-            restaurant?._id,
+            restaurant?._id
           );
           setRestaurantMenu(menu);
         }
@@ -55,6 +60,21 @@ export default function MyMenuPage() {
     // Call the async function immediately
     fetchRestaurantMenu();
   }, [restaurant, isMenuCreated]);
+  useEffect(() => {
+    const fetchReview = async () => {
+      try {
+        if (restaurant) {
+          const review = await reviewService.getReviewRestaurant(
+            restaurant?._id
+          );
+          setReview(review.data);
+        }
+      } catch (error) {
+        console.error("Error fetching restaurant review: ", error);
+      }
+    };
+    fetchReview();
+  }, [restaurant]);
   const closeSheet = () => {
     setIsSheetOpen(false);
     setMenuPrice(0);
@@ -68,7 +88,7 @@ export default function MyMenuPage() {
       const res = await menuService.createMenu(
         restaurant._id,
         menuName,
-        menuPrice,
+        menuPrice
       );
       setIsMenuCreated(res.success);
     }
@@ -94,20 +114,12 @@ export default function MyMenuPage() {
             </div>
             <div></div>
           </div>
-          <div className="bg-white rounded-2xl flex flex-col p-4 shadow-lg space-y-4 mt-8">
-            <div className="bg-brown-light p-2 rounded-lg">
-              Caption is still a caption Caption is still a captionCaption is
-              still a caption Caption is still a caption
-            </div>
-            <div className="flex flex-row justify-between">
-              <div className="flex flex-row space-x-1">
-                <StarIcon className="text-yellow" />
-                <p className="text-white-normal-active">4.5</p>
-                <p className="text-white-dark ">Rating and reviews</p>
-              </div>
-              <KeyboardArrowRightIcon className="text-white-normal-active" />
-            </div>
-          </div>
+          <ReviewCard
+            caption={review[0]?.reviewText || "ยังไม่ได้รับการรีวิว"}
+            star={review[0]?.rating.toString() || "-"}
+            panel={review.length !== 0}
+          />
+
           <div className="flex flex-row justify-between items-center mt-8">
             <div className="text-2xl font-medium text-center ">Menu</div>
             <div
