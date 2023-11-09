@@ -1,9 +1,16 @@
 import { RequestHandler, Request } from "express";
 import jwt from "jsonwebtoken";
 import User, { IUser } from "../models/user.model";
+import { RestaurantService } from "../services/restaurant.service";
+import { IRestaurant } from "../resources/interfaces/restaurnat.type";
 export interface AuthenticatedRequest extends Request {
   user: IUser;
 }
+
+export interface RestaurantRequest extends AuthenticatedRequest {
+  restaurant: IRestaurant;
+}
+
 const protect: RequestHandler = async (expressReq, res, next) => {
   const req = expressReq as AuthenticatedRequest;
   let token;
@@ -40,13 +47,31 @@ const protect: RequestHandler = async (expressReq, res, next) => {
 };
 
 const authorize = (...roles: string[]) => {
-  return (req: any, res: any, next: any) => {
-    if (!roles.includes(req.user.role)) {
+  return async (req: any, res: any, next: any) => {
+    const { role, _id } = req.user;
+
+    if (!roles.includes(role)) {
       return res.status(403).json({
         success: false,
-        message: `User role ${req.user.role} is not authorized to access this route`,
+        message: `User role ${role} is not authorized to access this route`,
       });
     }
+
+    if (role === "restaurant") {
+      try {
+        const restaurant = await RestaurantService.getRestaurantByUserId(_id);
+        if (!restaurant) {
+          throw new Error();
+        }
+        req.restaurant = restaurant;
+      } catch (err) {
+        return res.status(403).json({
+          success: false,
+          message: `User role ${role} is not authorized to access this route`,
+        });
+      }
+    }
+
     next();
   };
 };
