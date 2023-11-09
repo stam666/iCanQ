@@ -36,12 +36,12 @@ export interface IOrderItem {
 
 export interface IOrder {
   _id?: string;
-  userId: string;
-  restaurantId: string;
-  orderItems: IOrderItem[];
-  status: OrderStatus;
-  totalPrice: number;
-  pickupTime: Date;
+  userId?: string;
+  restaurantId?: string;
+  orderItems?: IOrderItem[];
+  status?: OrderStatus;
+  totalPrice?: number;
+  pickupTime?: Date;
   createdTime?: Date;
   updatedTime?: Date;
 }
