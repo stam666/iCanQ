@@ -36,3 +36,6 @@ backend/docs/
 # Ignore user-specific files
 *.user
 *.suo
+
+# Ignore Kubernetes secret files
+/kubernetes/*-secret.yaml
