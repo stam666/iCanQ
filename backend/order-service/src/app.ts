@@ -18,7 +18,7 @@ mongoose.set("strictQuery", true);
 mongoose.connect(MONGO_URL);
 console.log("Connected to MongoDB on " + MONGO_URL);
 
-// MqService.amqpConnect();
+MqService.amqpConnect();
 
 var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
