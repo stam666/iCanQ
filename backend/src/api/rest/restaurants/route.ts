@@ -16,12 +16,14 @@ mongoose.connect(mongoUrl);
 console.log("Connected to MongoDB on " + mongoUrl);
 
 app
-  .patch("/updateRestaurantInfo/:id", RestaurantController.editRestaurantInfo)
+  .patch("/:id", RestaurantController.editRestaurantInfo)
   .patch("/setRestaurantStatus/:id", RestaurantController.setRestaurantStatus)
-  .get("/getRestaurantStatus/:id", RestaurantController.getRestaurantStatus)
-  .get("/getAllRestaurantMenu/:id", RestaurantController.getAllRestaurantMenu);
+  .get("/getRestaurantStatus", RestaurantController.getRestaurantStatus)
+  .get("/getAllRestaurantMenu/:id", RestaurantController.getAllRestaurantMenu)
+  .get("/getRestaurant", RestaurantController.getRestaurantByUserId)
+  .post("/updateMenu", RestaurantController.updateMenuToRestaurant);
 app
-  .post("/createRestaurant/", RestaurantController.createRestaurant)
+  .post("/", RestaurantController.createRestaurant)
   .get("/", RestaurantController.getAllRestaurants);
 
 app.listen(PORT, () => {

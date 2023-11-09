@@ -22,6 +22,8 @@ export default function InformationPage(this: any, props: Props) {
   const [isCustomer, setIsCustomer] = useState(true); // [true, false]
   const [isRestaurant, setIsRestaurant] = useState(false); // [true, false]
   const [role, setRole] = useState("customer"); // ["customer", "restaurant"
+  const [restaurantName, setRestaurantName] = useState("");
+  const [restaurantInfo, setRestaurantInfo] = useState("");
   const router = useRouter();
 
   React.useEffect(() => {
@@ -46,6 +48,16 @@ export default function InformationPage(this: any, props: Props) {
       setIsRestaurant(true);
     }
   };
+  const handleRestaurantNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRestaurantName(e.target.value);
+  };
+  const handleRestaurantInfoChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRestaurantInfo(e.target.value);
+  };
   const handleSignUp = async () => {
     try {
       const signUp = await userService.signUp(
@@ -54,7 +66,10 @@ export default function InformationPage(this: any, props: Props) {
         firstName,
         lastName,
         role,
-        password
+        password,
+        restaurantName,
+        restaurantInfo,
+        true,
       );
 
       setFirstName("");
@@ -127,6 +142,20 @@ export default function InformationPage(this: any, props: Props) {
               </label>
             </div>
           </div>
+          {isRestaurant && !isCustomer && (
+            <div className="flex flex-col w-full space-y-4">
+              <InputText
+                placeholder={"Restaurant Name"}
+                value={restaurantName}
+                onChange={handleRestaurantNameChange}
+              />
+              <InputText
+                placeholder={"Restaurant Info"}
+                value={restaurantInfo}
+                onChange={handleRestaurantInfoChange}
+              />
+            </div>
+          )}
           <button
             className="p-4 justify-center self-stretch rounded-2xl bg-primary"
             onClick={handleSignUp}

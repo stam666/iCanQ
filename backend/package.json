@@ -12,6 +12,8 @@
     "users:dev": "cd src/api/rest/users && yarn start:dev",
     "restaurants": "node dist/src/api/rest/restaurants/server.js",
     "restaurants:dev": "cd src/api/rest/restaurants && yarn start:dev",
+    "reviews": "node dist/src/api/rest/reviews/server.js",
+    "reviews:dev": "cd src/api/rest/reviews && yarn start:dev",
     "menus": "node dist/src/api/rest/menus/server.js",
     "menus:dev": "cd src/api/rest/menus && yarn start:dev",
     "orders" : "node dist/src/api/rest/orders/server.js",

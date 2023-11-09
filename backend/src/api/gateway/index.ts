@@ -9,7 +9,6 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 import { MqService } from "./services/mq.service";
 import { SocketsService } from "./services/socket.service";
 import { Queue } from "../../shared/common/interfaces/orderTypes";
-import reviewRouter from "../rest/reviews/route";
 
 require("dotenv").config({
   path: "./config.env",
@@ -78,6 +77,17 @@ const startGateway = async (): Promise<AddressInfo> => {
   });
 
   app.use("/order", orderServiceProxy);
+
+  /// REVIEW SERVICE
+  const reviewProxy = createProxyMiddleware({
+    target: `${process.env.REVIEW_SERVICE_URI}`,
+    changeOrigin: true,
+    pathRewrite: {
+      "^/reviews": "",
+    },
+  });
+
+  app.use("/reviews", reviewProxy);
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

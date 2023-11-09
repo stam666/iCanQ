@@ -6,7 +6,7 @@ async function login(input: string, password: string) {
     {
       input,
       password,
-    }
+    },
   );
 
   if (!res) {
@@ -22,7 +22,10 @@ async function signUp(
   firstName: string,
   lastName: string,
   role: string,
-  password: string
+  password: string,
+  restaurantName?: string,
+  restaurantInfo?: string,
+  openStatus?: boolean,
 ) {
   const res = await axios.post(
     process.env.NEXT_PUBLIC_API_URL + "/users/auth/register",
@@ -33,7 +36,10 @@ async function signUp(
       lastName,
       role,
       password,
-    }
+      restaurantName,
+      restaurantInfo,
+      openStatus,
+    },
   );
   if (!res) {
     throw new Error("Failed to sign up");
