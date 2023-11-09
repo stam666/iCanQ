@@ -38,6 +38,16 @@ Since we have migrated each service to be a microservice, we have separated pack
   yarn dev
   ```
 
+## Run K6
+
+- Run packed with iCanQ : i.e. **[some_url_path]** = hostIp:8000/restaurants
+  ```
+  > docker-compose up
+  > [start all services or just tested service]
+  > docker-compose run k6 run -e PUBLIC_IP=[some_url_path] /tests/load_test.js
+  ```
+- Run only load-test : cd into loadtest.tests folder then run the same command
+
 ## **For anyone who get import error things**
 
 Please try add <mark>tsconfig.json</mark> in backend folder
