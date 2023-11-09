@@ -46,7 +46,9 @@ Since we have migrated each service to be a microservice, we have separated pack
   > [start all services or just tested service]
   > docker-compose run k6 run -e PUBLIC_IP=[some_url_path] /tests/load_test.js
   ```
+  - Grafana can be opened at port 3001
 - Run only load-test : cd into loadtest.tests folder then run the same command
+  - Grafana can be opened at port 3000
 
 ## **For anyone who get import error things**
 
