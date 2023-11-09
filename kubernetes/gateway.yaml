@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-service
+  name: gateway-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend-service
+      app: gateway-service
   template:
     metadata:
       labels:
-        app: backend-service
+        app: gateway-service
     spec:
       containers:
-        - name: backend-service
-          image: giftnichakul/gate-way:latest
+        - name: gateway-service
+          image: giftnichakul/gateway:latest
           ports:
             - containerPort: 8000
           env:
@@ -23,22 +23,24 @@ spec:
             - name: PORT
               value: "8000"
             - name: USER_SERVICE_URI
-              value: http://user-service
+              value: http://user-service.default
             - name: RESTAURANT_SERVICE_URI
-              value: http://restaurant-service
+              value: http://restaurant-service.default
             - name: MENU_SERVICE_URI
-              value: http://menu-service
+              value: http://menu-service.default
             - name: ORDER_SERVICE_URI
-              value: http://order-service
+              value: http://order-service.default
+            - name: REVIEW_SERVICE_URI
+              value: http://review-service.default
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: gateway-service
 spec:
   selector:
-    app: backend-service
+    app: gateway-service
   ports:
     - protocol: TCP
       port: 8000

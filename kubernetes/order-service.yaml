@@ -22,6 +22,10 @@ spec:
               value: mongodb+srv://admin:SajA7iAFs2rn8LBt@cluster0.pfytphq.mongodb.net/ICANQ?retryWrites=true&w=majority
             - name: ORDER_SERVICE_PORT
               value: "8004"
+            - name: MQ_HOST
+              value: localhost
+            - name: GRPC_HOST
+              value: localhost
 ---
 apiVersion: v1
 kind: Service
