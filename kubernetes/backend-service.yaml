@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend-service
-          image: giftnichakul/backends:latest
+          image: giftnichakul/gate-way:latest
           ports:
             - containerPort: 8000
           env:
@@ -23,13 +23,13 @@ spec:
             - name: PORT
               value: "8000"
             - name: USER_SERVICE_URI
-              value: http://user-service:8001
+              value: http://user-service
             - name: RESTAURANT_SERVICE_URI
-              value: http://restaurant-service:8002
+              value: http://restaurant-service
             - name: MENU_SERVICE_URI
-              value: http://menu-service:8003
+              value: http://menu-service
             - name: ORDER_SERVICE_URI
-              value: http://order-service:8004
+              value: http://order-service
 
 ---
 apiVersion: v1
