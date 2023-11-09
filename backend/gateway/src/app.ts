@@ -33,8 +33,6 @@ app.use(
   })
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // USER SERVICE
 const userProxy = createProxyMiddleware({
@@ -68,6 +66,9 @@ const menuProxy = createProxyMiddleware({
 });
 
 app.use("/menu", menuProxy);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ORDER SERVICE
 // const orderServiceProxy = createProxyMiddleware({
