@@ -22,7 +22,15 @@ spec:
               value: mongodb+srv://admin:SajA7iAFs2rn8LBt@cluster0.pfytphq.mongodb.net/ICANQ?retryWrites=true&w=majority
             - name: MENU_SERVICE_PORT
               value: "8003"
-
+            - name: DATABASE_HOST
+              value: aws.connect.psdb.cloud
+            - name: DATABASE_USERNAME
+              value: 1l8jhqv6aa81w2saj0m9
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: icanq-service
+                  key: DATABASE_PASSWORD
 ---
 apiVersion: v1
 kind: Service

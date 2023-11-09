@@ -23,15 +23,15 @@ spec:
             - name: PORT
               value: "8000"
             - name: USER_SERVICE_URI
-              value: http://user-service.default
+              value: http://user-service.default:8001
             - name: RESTAURANT_SERVICE_URI
-              value: http://restaurant-service.default
+              value: http://restaurant-service.default:8002
             - name: MENU_SERVICE_URI
-              value: http://menu-service.default
+              value: http://menu-service.default:8003
             - name: ORDER_SERVICE_URI
-              value: http://order-service.default
+              value: http://order-service.default:8004
             - name: REVIEW_SERVICE_URI
-              value: http://review-service.default
+              value: http://review-service.default:8005
 
 ---
 apiVersion: v1

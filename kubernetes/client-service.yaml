@@ -19,11 +19,13 @@ spec:
             - containerPort: 3000
           env:
             - name: NEXT_PUBLIC_API_URL
-              value: http://client-service:8000
+              value: http://gateway:8000
             - name: NEXTAUTH_URL
               value: http://localhost:3000
             - name: NEXTAUTH_SECRET
-              value: DolnplMCIZp/KrTJIkaCKiYE7cjmsBVePHBKFdI9wTY=
+              secretKeyRef:
+                name: icanq-service
+                key: NEXTAUTH_SECRET
 
 ---
 apiVersion: v1
