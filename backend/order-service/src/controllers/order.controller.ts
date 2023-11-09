@@ -9,6 +9,7 @@ import {
   IOrderId,
   IOrderList,
   OrderStatus,
+  Queue,
 } from "../resources/interfaces/order.type";
 
 var grpc = require("@grpc/grpc-js");
@@ -87,7 +88,7 @@ const insert = async (
   });
   try {
     const result = await newOrderItem.save();
-    // MqService.publishOrder(result, Queue.CREATE);
+    MqService.publishOrder(result, Queue.CREATE);
     console.log(result);
     callback(null, { ...result.toObject() });
   } catch (err) {
@@ -113,6 +114,7 @@ const update = async (
     );
     if (updatedOrder) {
       callback(null, { ...updatedOrder.toObject() });
+      MqService.publishOrder(updatedOrder, Queue.UPDATE);
     } else {
       callback({
         code: grpc.status.NOT_FOUND,

@@ -1,5 +1,6 @@
 import amqp, { ConsumeMessage } from "amqplib";
-import { IOrderItem, Queue } from "../../../../shared/common/interfaces/orderTypes";
+import { IOrder, Queue } from "../resources/interfaces/order.type";
+
 
 const MQ_HOST = process.env.MQ_HOST || "localhost";
 const MQ_URL = `amqp://${MQ_HOST}:5672`;
@@ -20,7 +21,7 @@ const amqpConnect = async () => {
   }
 };
 
-const publishOrder = async (order: IOrderItem, queue: Queue) => {
+const publishOrder = async (order: IOrder, queue: Queue) => {
   await orderChannel.publish(EXCHANGE, queue, Buffer.from(JSON.stringify(order)));
   console.log(`AMQP - order: ${order} published to ${EXCHANGE} - ${queue}`);
 };

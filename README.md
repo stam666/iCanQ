@@ -19,6 +19,7 @@ Since we have migrated each service to be a microservice, we have separated pack
   yarn restaurants:dev
   yarn menus:dev
   yarn orders:dev
+  yarn reviews:dev
   ```
 - Run command for prod
   ```
@@ -29,6 +30,7 @@ Since we have migrated each service to be a microservice, we have separated pack
   yarn restaurants
   yarn menus
   yarn orders
+  yarn reviews
   ```
 
 ## Run client in /client
