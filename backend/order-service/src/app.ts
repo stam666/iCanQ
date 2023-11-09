@@ -1,5 +1,5 @@
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");

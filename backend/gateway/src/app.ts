@@ -1,6 +1,6 @@
 import express from "express";
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 
 import cors from "cors";
@@ -32,7 +32,6 @@ app.use(
     credentials: true,
   })
 );
-
 
 // USER SERVICE
 const userProxy = createProxyMiddleware({
