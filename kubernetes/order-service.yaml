@@ -23,9 +23,12 @@ spec:
             - name: ORDER_SERVICE_PORT
               value: "8004"
             - name: MQ_HOST
-              value: rabbitmq
+              value: rabbitmq-service
             - name: GRPC_HOST
               value: localhost
+            - name: GRPC_PORT
+              value: "30043"
+
 ---
 apiVersion: v1
 kind: Service

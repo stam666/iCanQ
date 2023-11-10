@@ -33,7 +33,11 @@ spec:
             - name: REVIEW_SERVICE_URI
               value: http://review-service.default:8005
             - name: MQ_HOST
-              value: http://rabbitmq.default:5672
+              value: http://rabbitmq-service.default:5672
+            - name: JWT_SECRET
+              value: Ey7nTKnggBc0bRN8WUjyShw2qzOZ6KW4fUyqcKBePxY=
+            - name: GRPC_HOST
+              value: http://order-service.default:8004
 
 ---
 apiVersion: v1

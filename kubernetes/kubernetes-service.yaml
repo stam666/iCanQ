@@ -101,12 +101,10 @@ spec:
             - name: DATABASE_HOST
               value: aws.connect.psdb.cloud
             - name: DATABASE_USERNAME
-              value: 1l8jhqv6aa81w2saj0m9
+              value: xd8kd6elxk4twh0a97vo
             - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: icanq-service
-                  key: DATABASE_PASSWORD
+              value: pscale_pw_fUbVrxHD8OrI7ydF9kEbZwZxlA2OeQFCg9cocw5OfN
+
 ---
 apiVersion: v1
 kind: Service
@@ -119,6 +117,7 @@ spec:
     - protocol: TCP
       port: 8003
       targetPort: 8003
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -145,9 +144,12 @@ spec:
             - name: ORDER_SERVICE_PORT
               value: "8004"
             - name: MQ_HOST
-              value: rabbitmq
+              value: rabbitmq-service
             - name: GRPC_HOST
               value: localhost
+            - name: GRPC_PORT
+              value: "30043"
+
 ---
 apiVersion: v1
 kind: Service
@@ -160,6 +162,7 @@ spec:
     - protocol: TCP
       port: 8004
       targetPort: 8004
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -197,6 +200,8 @@ spec:
     - protocol: TCP
       port: 8005
       targetPort: 8005
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -231,8 +236,12 @@ spec:
               value: http://order-service.default:8004
             - name: REVIEW_SERVICE_URI
               value: http://review-service.default:8005
-            - name: MQ_HOST
-              value: http://rabbitmq.default:5672
+            - name: MQ_URI
+              value: http://rabbitmq-service.default:5672
+            - name: JWT_SECRET
+              value: Ey7nTKnggBc0bRN8WUjyShw2qzOZ6KW4fUyqcKBePxY=
+            - name: GRPC_URI
+              value: http://order-service.default:30043
 
 ---
 apiVersion: v1
@@ -247,6 +256,7 @@ spec:
       port: 8000
       targetPort: 8000
   type: LoadBalancer
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -274,13 +284,11 @@ spec:
           env:
             - name: RABBITMQ_DEFAULT_USER
               value: guest
-            - name: rabbitmq_SERVICE_PORT
-              value: "5672"
             - name: RABBITMQ_DEFAULT_PASS
               value: guest
-  volumes:
-    - name: rabbitmq-data
-      emptyDir: {}
+      volumes:
+        - name: rabbitmq-data
+          emptyDir: {}
 
 ---
 apiVersion: v1

@@ -24,13 +24,11 @@ spec:
           env:
             - name: RABBITMQ_DEFAULT_USER
               value: guest
-            - name: rabbitmq_SERVICE_PORT
-              value: "5672"
             - name: RABBITMQ_DEFAULT_PASS
               value: guest
-  volumes:
-    - name: rabbitmq-data
-      emptyDir: {}
+      volumes:
+        - name: rabbitmq-data
+          emptyDir: {}
 
 ---
 apiVersion: v1
