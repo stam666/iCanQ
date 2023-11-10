@@ -22,7 +22,7 @@ async function addMenuToRestaurant(
 ) {
   try {
     await axios.post(
-      `http://localhost:${process.env.PORT}/restaurants/updateMenu`,
+      `${process.env.GATEWAY_URI}/restaurants/updateMenu`,
       // await axios.post(
       //   `http://localhost:8002/createMenu`,
       {

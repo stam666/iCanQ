@@ -3,7 +3,8 @@ import { SocketsService } from "./socket.service";
 import { IOrder, Queue } from "../resources/interfaces/order.type";
 
 const MQ_HOST = process.env.MQ_HOST || "localhost";
-const MQ_URL = `amqp://${MQ_HOST}:5672`;
+const MQ_PORT = process.env.MQ_PORT || 5672;
+const MQ_URL = `amqp://${MQ_HOST}:${MQ_PORT}`;
 const EXCHANGE = "order";
 
 let orderChannel = null;

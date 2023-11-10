@@ -31,7 +31,7 @@ const startGateway = async () => {
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CLIENT_URI,
       credentials: true,
     })
   );
@@ -98,7 +98,7 @@ const startGateway = async () => {
 
   const PORT = process.env.PORT || 8000;
   httpServer.listen(PORT, () => {
-    console.log(`⚡️[server]: Gateway is running at https://localhost:${PORT}`);
+    console.log(`⚡️[server]: Gateway is running at ${process.env.GATEWAY_URI}`);
   });
 };
 

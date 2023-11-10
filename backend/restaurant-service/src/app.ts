@@ -29,6 +29,6 @@ app
 
 app.listen(PORT, () => {
   console.log(
-    `⚡️[server]: Restaurant service is running at https://localhost:${PORT}`
+    `⚡️[server]: Restaurant service is running at ${process.env.RESTAURANT_SERVICE_URI}`
   );
 });

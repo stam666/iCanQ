@@ -16,6 +16,6 @@ const PORT = process.env.MENU_SERVICE_PORT || 8003;
 
 app.listen(PORT, () => {
   console.log(
-    `⚡️[server]: Menu service is running at https://localhost:${PORT}`
+    `⚡️[server]: Menu service is running at ${process.env.MENU_SERVICE_URI}`
   );
 });

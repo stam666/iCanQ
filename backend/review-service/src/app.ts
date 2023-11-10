@@ -19,6 +19,6 @@ app.use("/", ReviewRouter);
 
 app.listen(PORT, () => {
   console.log(
-    `⚡️[server]: Review service is running at https://localhost:${PORT}`
+    `⚡️[server]: Review service is running at ${process.env.REVIEW_SERVICE_URI}`
   );
 });
