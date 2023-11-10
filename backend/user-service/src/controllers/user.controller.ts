@@ -9,7 +9,7 @@ async function createRestaurant(
   openStatus: boolean
 ) {
   try {
-    await axios.post(`http://localhost:${process.env.PORT}/restaurants/`, {
+    await axios.post(`${process.env.GATEWAY_URI}/restaurants/`, {
       userId: userId,
       restaurantName: restaurantName,
       restaurantInfo: restaurantInfo,
