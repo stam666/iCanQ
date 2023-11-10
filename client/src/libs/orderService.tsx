@@ -47,9 +47,10 @@ const getOrder = async (orderId: string) => {
     throw new Error("Failed to get order");
   }
 
-  return await res.data.data;
+  return await res.data;
 };
 
 export const orderService = {
+  getOrder,
   placeOrder,
 };

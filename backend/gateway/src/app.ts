@@ -1,6 +1,6 @@
 import express from "express";
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 
 import cors from "cors";
@@ -26,8 +26,14 @@ const startGateway = async () => {
 
   await MqService.amqpConnect();
   SocketsService.configureSocket(httpServer);
-  MqService.assertAndConsumeQueue(Queue.CREATE, SocketsService.triggerOrderCreatedToRestaurant);
-  MqService.assertAndConsumeQueue(Queue.UPDATE, SocketsService.triggerOrderUpdatedToCustomer);
+  MqService.assertAndConsumeQueue(
+    Queue.CREATE,
+    SocketsService.triggerOrderCreatedToRestaurant
+  );
+  MqService.assertAndConsumeQueue(
+    Queue.UPDATE,
+    SocketsService.triggerOrderUpdatedToCustomer
+  );
 
   app.use(
     cors({
