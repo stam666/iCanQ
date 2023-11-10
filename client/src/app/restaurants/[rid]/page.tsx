@@ -1,13 +1,14 @@
 "use client";
 import MenuPanel from "@/components/MenuPanel";
-import { IOrder } from "@/models/order.model";
+import { orderService } from "@/libs/orderService";
+import { IOrderItem } from "@/models/order.model";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import StarIcon from "@mui/icons-material/Star";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function RestaurantDetailPage({
@@ -17,17 +18,27 @@ export default function RestaurantDetailPage({
 }) {
   const urlParams = useSearchParams();
   const restaurantName = urlParams.get("name");
-  const [cart, setCart] = useState<IOrder[]>([]);
+  const router = useRouter();
+  const [cart, setCart] = useState<IOrderItem[]>([]);
   const totalSum = cart.reduce(
-    (accumulator, order) => accumulator + parseInt(order.totalPrice),
-    0,
+    (sum, item) => sum + item.price * item.amount,
+    0
   );
-  const handleAddToCart = (order: IOrder) => {
+  const handleAddToCart = (order: IOrderItem) => {
     setCart((prevState) => [...prevState, order]);
   };
   const handleDeleteItem = (id: string) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
+    const updatedCart = cart.filter((item) => item.menuId !== id);
     setCart(updatedCart);
+  };
+  const handlePlaceOrder = async () => {
+    try {
+      const res = await orderService.placeOrder(params.rid, cart);
+      console.log(res);
+      router.push("/order/" + res._id);
+    } catch (err) {
+      console.log(err);
+    }
   };
   const [isSummary, setIsSummary] = useState(false);
   if (!isSummary)
@@ -88,7 +99,7 @@ export default function RestaurantDetailPage({
           <div></div>
         </div>
         <div className="w-full space-y-6">
-          {cart.map((order: IOrder, index: number) => (
+          {cart.map((order: IOrderItem, index: number) => (
             <div key={index}>
               <div className="flex flex-row rounded-2xl bg-white shadow-lg w-full">
                 <div className="w-4/5 flex flex-col p-4 space-y-2">
@@ -99,12 +110,12 @@ export default function RestaurantDetailPage({
                     <div className="text-left">{order.name}</div>
                   </div>
                   {order.note != "" ? <p>Note: {order.note}</p> : null}
-                  <div className="text-2xl">{order.totalPrice}฿</div>
+                  <div className="text-2xl">{order.price * order.amount}฿</div>
                 </div>
                 <div className="bg-red text-white justify-center items-center text-center w-1/5 rounded-tr-2xl rounded-br-2xl">
                   <div
                     className="flex w-full h-full justify-center items-center text-center"
-                    onClick={() => handleDeleteItem(order.id)}
+                    onClick={() => handleDeleteItem(order.menuId)}
                   >
                     <DeleteIcon />
                   </div>
@@ -121,9 +132,7 @@ export default function RestaurantDetailPage({
           <button
             disabled={cart.length === 0}
             className="p-4 font-medium text-white w-full bg-blue rounded-full transition-all duration-30 disabled:bg-white-normal-active"
-            onClick={() => {
-              // Place Order
-            }}
+            onClick={handlePlaceOrder}
           >
             <div className="text-center">Place Order</div>
           </button>
