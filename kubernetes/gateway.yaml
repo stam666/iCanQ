@@ -32,6 +32,8 @@ spec:
               value: http://order-service.default:8004
             - name: REVIEW_SERVICE_URI
               value: http://review-service.default:8005
+            - name: MQ_HOST
+              value: http://rabbitmq.default:5672
 
 ---
 apiVersion: v1
