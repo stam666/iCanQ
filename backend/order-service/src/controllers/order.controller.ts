@@ -33,18 +33,24 @@ const get = async (
   call: ServerUnaryCall<IOrderId, IOrder>,
   callback: sendUnaryData<IOrder>
 ) => {
-  const order = await Order.findById(
-    new mongoose.Types.ObjectId(call.request.orderId)
-  );
+  try {
+    const order = await Order.findById({ _id: call.request.orderId });
+    console.log(order);
 
-  if (order) {
-    callback(null, {
-      ...order.toObject(),
-    });
-  } else {
+    if (order) {
+      callback(null, {
+        ...order.toObject(),
+      });
+    } else {
+      callback({
+        code: grpc.status.NOT_FOUND,
+        details: "Not found",
+      });
+    }
+  } catch (err) {
     callback({
-      code: grpc.status.NOT_FOUND,
-      details: "Not found",
+      code: grpc.status.INTERNAL,
+      details: `Internal Server Error: ${err.message}`,
     });
   }
 };

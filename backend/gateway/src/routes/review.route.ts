@@ -5,9 +5,9 @@ import { ReviewController } from "../controllers/review.controller";
 
 const router = express.Router();
 
-router.get("restaurant/:restaurantId", ReviewController.getReviews);
+router.get("/restaurant/:restaurantId", ReviewController.getReviews);
 router.post(
-  "restaurant/:restaurantId",
+  "/restaurant/:restaurantId",
   AuthMiddleware.protect,
   ReviewController.createReview
 );

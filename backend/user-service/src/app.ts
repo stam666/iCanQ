@@ -1,6 +1,6 @@
 import express from "express";
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 import mongoose from "mongoose";
 import cors from "cors";
