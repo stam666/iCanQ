@@ -12,7 +12,7 @@ import { MqService } from "./services/mq.service";
 
 const GRPC_HOST = process.env.GRPC_HOST || "localhost";
 const GRPC_PORT = process.env.GRPC_PORT || "30043";
-const GRPC_URL = `${GRPC_HOST}:${GRPC_PORT}}`;
+const GRPC_URL = `${GRPC_HOST}:${GRPC_PORT}`;
 const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/testDB";
 
 mongoose.set("strictQuery", true);
