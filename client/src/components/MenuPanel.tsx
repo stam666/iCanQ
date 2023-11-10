@@ -2,6 +2,7 @@ import InputText from "@/components/inputText";
 import MenuCard from "@/components/MenuCard";
 import restaurantService from "@/libs/restaurantService";
 import { IMenu } from "@/models/menu.model";
+import { IOrderItem } from "@/models/order.model";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -118,13 +119,14 @@ export default function MenuPanel({
             <button
               disabled={amount === 0}
               onClick={(e) => {
-                addToCart({
-                  id: crypto.randomUUID(),
+                const orderItem: IOrderItem = {
+                  menuId: selectedMenu?.menuId,
                   name: selectedMenu?.name,
                   amount: amount,
                   note: note,
-                  totalPrice: amount * parseInt(selectedMenu?.price),
-                });
+                  price: Number(selectedMenu?.price)
+                };
+                addToCart(orderItem);
                 closeBottomSheet();
               }}
               className="mt-2 p-4 bg-primary text-white rounded-2xl text-center w-full disabled:bg-white-normal-active"
