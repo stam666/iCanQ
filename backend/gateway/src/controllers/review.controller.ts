@@ -13,9 +13,8 @@ const getReviews = async (req: Request, res: Response) => {
 };
 
 const createReview = async (req: AuthenticatedRequest, res: Response) => {
-  const { userId } = req.user._id;
   const { restaurantId } = req.params;
-  const { reviewText, rating } = req.body;
+  const { userId, reviewText, rating } = req.body;
   try {
     const review = await ReviewService.createReview(
       userId,
@@ -30,9 +29,8 @@ const createReview = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 const editReview = async (req: AuthenticatedRequest, res: Response) => {
-  const { userId } = req.user._id;
   const { reviewId } = req.params;
-  const { reviewText, rating } = req.body;
+  const { userId, reviewText, rating } = req.body;
   try {
     const review = await ReviewService.editReview(
       userId,
@@ -47,8 +45,7 @@ const editReview = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 const deleteReview = async (req: AuthenticatedRequest, res: Response) => {
-  const { userId } = req.user._id;
-  const { reviewId } = req.params;
+  const { userId, reviewId } = req.params;
   try {
     const review = await ReviewService.deleteReview(userId, reviewId);
     res.status(200).json(review);

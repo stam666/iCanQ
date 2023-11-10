@@ -1,14 +1,15 @@
-FROM node:18
+FROM node:latest
 
-RUN mkdir -p /app
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY package.json /app
-COPY yarn.lock /app
-RUN yarn
+COPY package.json yarn.lock* ./
 
-COPY . /app
+RUN yarn install
+
+COPY . .
+
 RUN yarn build
 
 EXPOSE 8004
+
 CMD [ "yarn", "start" ]

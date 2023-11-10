@@ -1,5 +1,5 @@
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 var grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
@@ -18,7 +18,7 @@ mongoose.set("strictQuery", true);
 mongoose.connect(MONGO_URL);
 console.log("Connected to MongoDB on " + MONGO_URL);
 
-// MqService.amqpConnect();
+MqService.amqpConnect();
 
 var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,

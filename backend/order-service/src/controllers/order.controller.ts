@@ -9,6 +9,7 @@ import {
   IOrderId,
   IOrderList,
   OrderStatus,
+  Queue,
 } from "../resources/interfaces/order.type";
 
 var grpc = require("@grpc/grpc-js");
@@ -32,18 +33,24 @@ const get = async (
   call: ServerUnaryCall<IOrderId, IOrder>,
   callback: sendUnaryData<IOrder>
 ) => {
-  const order = await Order.findById(
-    new mongoose.Types.ObjectId(call.request.orderId)
-  );
+  try {
+    const order = await Order.findById({ _id: call.request.orderId });
+    console.log(order);
 
-  if (order) {
-    callback(null, {
-      ...order.toObject(),
-    });
-  } else {
+    if (order) {
+      callback(null, {
+        ...order.toObject(),
+      });
+    } else {
+      callback({
+        code: grpc.status.NOT_FOUND,
+        details: "Not found",
+      });
+    }
+  } catch (err) {
     callback({
-      code: grpc.status.NOT_FOUND,
-      details: "Not found",
+      code: grpc.status.INTERNAL,
+      details: `Internal Server Error: ${err.message}`,
     });
   }
 };
@@ -87,7 +94,7 @@ const insert = async (
   });
   try {
     const result = await newOrderItem.save();
-    // MqService.publishOrder(result, Queue.CREATE);
+    MqService.publishOrder(result, Queue.CREATE);
     console.log(result);
     callback(null, { ...result.toObject() });
   } catch (err) {
@@ -113,6 +120,7 @@ const update = async (
     );
     if (updatedOrder) {
       callback(null, { ...updatedOrder.toObject() });
+      MqService.publishOrder(updatedOrder, Queue.UPDATE);
     } else {
       callback({
         code: grpc.status.NOT_FOUND,
