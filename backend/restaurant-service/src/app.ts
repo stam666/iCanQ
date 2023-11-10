@@ -1,11 +1,10 @@
 import express from "express";
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 
 import { RestaurantController } from "./controllers/restaurant.controller";
 import mongoose from "mongoose";
-
 
 const app = express();
 app.use(express.json());
