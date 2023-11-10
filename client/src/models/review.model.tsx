@@ -1,5 +1,5 @@
 export interface IReview {
-  id: string;
+  _id: string;
   restaurantId: string;
   userId: string;
   reviewText: string;

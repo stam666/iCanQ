@@ -60,12 +60,19 @@ export default function ReviewPage() {
         </div>
         <div>
           {review.length === 0 ? (
-            <ReviewCard caption="ยังไม่ได้รับการรีวิว" star="-" />
+            <ReviewCard
+              caption="ยังไม่ได้รับการรีวิว"
+              star="-"
+              reviewId={undefined}
+              uid={undefined}
+            />
           ) : (
             review.map((item, index) => {
               return (
                 <ReviewCard
                   key={`review_${index}`}
+                  reviewId={item.id}
+                  uid={item.userId}
                   caption={item?.reviewText || "ยังไม่ได้รับการรีวิว"}
                   star={item?.rating.toString() || "-"}
                 />

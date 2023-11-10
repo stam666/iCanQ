@@ -26,8 +26,14 @@ const startGateway = async () => {
 
   await MqService.amqpConnect();
   SocketsService.configureSocket(httpServer);
-  MqService.assertAndConsumeQueue(Queue.CREATE, SocketsService.triggerOrderCreatedToRestaurant);
-  MqService.assertAndConsumeQueue(Queue.UPDATE, SocketsService.triggerOrderUpdatedToCustomer);
+  MqService.assertAndConsumeQueue(
+    Queue.CREATE,
+    SocketsService.triggerOrderCreatedToRestaurant
+  );
+  MqService.assertAndConsumeQueue(
+    Queue.UPDATE,
+    SocketsService.triggerOrderUpdatedToCustomer
+  );
 
   app.use(
     cors({

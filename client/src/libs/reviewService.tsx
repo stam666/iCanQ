@@ -20,6 +20,29 @@ async function createReview(
   return await res.data;
 }
 
+async function editReview(
+  reviewId: string,
+  userId: string,
+  reviewText: string,
+  rating: number,
+  token: string
+) {
+  const axiosAuth = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const res = await axiosAuth.patch(`/review/${reviewId}`, {
+    userId,
+    reviewId,
+    reviewText,
+    rating,
+  });
+  return await res.data;
+}
+
 async function deleteReview(userId: string, reviewId: string) {
   const res = await axios.delete(
     process.env.NEXT_PUBLIC_API_URL + `/review/${reviewId}`
@@ -27,5 +50,10 @@ async function deleteReview(userId: string, reviewId: string) {
   return await res.data;
 }
 
-const reviewService = { getReviewRestaurant, createReview, deleteReview };
+const reviewService = {
+  getReviewRestaurant,
+  createReview,
+  editReview,
+  deleteReview,
+};
 export default reviewService;

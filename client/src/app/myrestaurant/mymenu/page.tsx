@@ -116,6 +116,8 @@ export default function MyMenuPage() {
           </div>
           <ReviewCard
             caption={review[0]?.reviewText || "ยังไม่ได้รับการรีวิว"}
+            reviewId={review[0]?._id}
+            uid={review[0]?.userId}
             star={review[0]?.rating.toString() || "-"}
             panel={review.length !== 0}
           />
