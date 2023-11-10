@@ -35,7 +35,6 @@ const protect: RequestHandler = async (expressReq, res, next) => {
 
     // Fetch the user based on the decoded token's ID and attach it to the request
     const user: IUser | null = await User.findById(decoded.id);
-
     if (!user) {
       return res
         .status(401)
@@ -94,7 +93,9 @@ const authSocket = async (socket: AuthSocket, next) => {
     }
     // if restaurant, join restaurant room
     if (user.role === "restaurant") {
-      const restaurant = await RestaurantService.getRestaurantByUserId(user._id);
+      const restaurant = await RestaurantService.getRestaurantByUserId(
+        user._id
+      );
       socket.room = restaurant._id;
     } else {
       socket.room = user._id;
@@ -104,7 +105,7 @@ const authSocket = async (socket: AuthSocket, next) => {
     console.error(err);
     return next(new Error("Not authorized socket"));
   }
-}
+};
 
 export const AuthMiddleware = {
   protect,
