@@ -6,21 +6,21 @@ import { useSession } from "next-auth/react";
 export default function ReviewCard({
   caption,
   star,
-  panel,
   rid,
   nameRestaurant,
   reviewId,
   uid,
   handleEditReview,
+  isRestaurant = false,
 }: {
   caption: string;
   star: string;
-  panel?: boolean;
   rid?: string;
   nameRestaurant?: string | null;
   uid: string | undefined;
   reviewId: string | undefined;
   handleEditReview?: () => void;
+  isRestaurant?: boolean;
 }) {
   const { data: session } = useSession();
 
@@ -40,8 +40,14 @@ export default function ReviewCard({
             </div>
           )}
         </div>
-        {panel && rid && (
-          <Link href={`/restaurants/${rid}/review?name=${nameRestaurant}`}>
+        {(isRestaurant ? true : rid) && (
+          <Link
+            href={
+              isRestaurant
+                ? "/myrestaurant/review"
+                : `/restaurants/${rid}/review?name=${nameRestaurant}`
+            }
+          >
             <KeyboardArrowRightIcon className="text-white-normal-active" />
           </Link>
         )}

@@ -71,7 +71,7 @@ export default function ReviewPage() {
               return (
                 <ReviewCard
                   key={`review_${index}`}
-                  reviewId={item.id}
+                  reviewId={item._id}
                   uid={item.userId}
                   caption={item?.reviewText || "ยังไม่ได้รับการรีวิว"}
                   star={item?.rating.toString() || "-"}

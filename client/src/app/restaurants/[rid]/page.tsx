@@ -65,7 +65,6 @@ export default function RestaurantDetailPage({
             star={review[0]?.rating.toString() || "-"}
             reviewId={review[0]?._id}
             uid={review[0]?.userId}
-            panel={review.length !== 0}
             nameRestaurant={restaurantName}
             rid={`${params.rid}`}
           />

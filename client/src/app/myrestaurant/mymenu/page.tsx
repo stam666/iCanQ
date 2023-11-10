@@ -119,7 +119,7 @@ export default function MyMenuPage() {
             reviewId={review[0]?._id}
             uid={review[0]?.userId}
             star={review[0]?.rating.toString() || "-"}
-            panel={review.length !== 0}
+            isRestaurant={true}
           />
 
           <div className="flex flex-row justify-between items-center mt-8">

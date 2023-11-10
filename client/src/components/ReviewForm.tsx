@@ -55,8 +55,6 @@ export default function ReviewForm({
         router.push("/");
         return res;
       } else {
-        console.log("review", reviewId, userId);
-
         if (reviewId) {
           const reviewText = review;
           const rating = star;
