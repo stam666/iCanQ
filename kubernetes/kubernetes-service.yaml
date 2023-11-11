@@ -1,6 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: rabbitmq-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq-service
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-service
+    spec:
+      containers:
+        - name: rabbitmq-service
+          image: rabbitmq:3-management
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          volumeMounts:
+            - name: rabbitmq-data
+              mountPath: /var/lib/rabbitmq
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: guest
+            - name: RABBITMQ_DEFAULT_PASS
+              value: guest
+      volumes:
+        - name: rabbitmq-data
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+spec:
+  selector:
+    app: rabbitmq-service
+  ports:
+    - protocol: TCP
+      port: 5672
+      targetPort: 5672
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: user-service
 spec:
   replicas: 1
@@ -101,9 +147,15 @@ spec:
             - name: DATABASE_HOST
               value: aws.connect.psdb.cloud
             - name: DATABASE_USERNAME
-              value: xd8kd6elxk4twh0a97vo
+              valueFrom:
+                secretKeyRef:
+                  name: my-secrets
+                  key: DATABASE_USERNAME
             - name: DATABASE_PASSWORD
-              value: pscale_pw_fUbVrxHD8OrI7ydF9kEbZwZxlA2OeQFCg9cocw5OfN
+              valueFrom:
+                secretKeyRef:
+                  name: my-secrets
+                  key: DATABASE_PASSWORD
 
 ---
 apiVersion: v1
@@ -238,8 +290,13 @@ spec:
               value: http://review-service.default:8005
             - name: MQ_URI
               value: http://rabbitmq-service.default:5672
+            - name: MQ_HOST
+              value: rabbitmq-service
             - name: JWT_SECRET
-              value: Ey7nTKnggBc0bRN8WUjyShw2qzOZ6KW4fUyqcKBePxY=
+              valueFrom:
+                secretKeyRef:
+                  name: my-secrets
+                  key: DATABASE_USERNAME
             - name: GRPC_URI
               value: http://order-service.default:30043
 
@@ -258,47 +315,4 @@ spec:
   type: LoadBalancer
 
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: rabbitmq-service
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: rabbitmq-service
-  template:
-    metadata:
-      labels:
-        app: rabbitmq-service
-    spec:
-      containers:
-        - name: rabbitmq-service
-          image: rabbitmq:3-management
-          ports:
-            - containerPort: 5672
-            - containerPort: 15672
-          volumeMounts:
-            - name: rabbitmq-data
-              mountPath: /var/lib/rabbitmq
-          env:
-            - name: RABBITMQ_DEFAULT_USER
-              value: guest
-            - name: RABBITMQ_DEFAULT_PASS
-              value: guest
-      volumes:
-        - name: rabbitmq-data
-          emptyDir: {}
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: rabbitmq-service
-spec:
-  selector:
-    app: rabbitmq-service
-  ports:
-    - protocol: TCP
-      port: 5672
-      targetPort: 5672

@@ -24,7 +24,7 @@ spec:
               value: http://localhost:3000
             - name: NEXTAUTH_SECRET
               secretKeyRef:
-                name: icanq-service
+                name: icanq-secret
                 key: NEXTAUTH_SECRET
 
 ---
