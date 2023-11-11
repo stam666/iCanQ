@@ -1,4 +1,4 @@
-import { IOrder, IOrderItem } from "@/models/order.model";
+import { IOrder, IOrderItem, OrderStatus } from "@/models/order.model";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
@@ -49,6 +49,29 @@ const getOrder = async (orderId: string) => {
 
   return await res.data;
 };
+
+const updateOrder = async (orderId: string, status: OrderStatus) => {
+  const session = await getSession();
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
+  const res = await axios.put(
+    `${process.env.NEXT_PUBLIC_API_URL}/order/${orderId}`,
+    {
+      status,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${session.user.token}`,
+      },
+    }
+  );
+  if (!res) {
+    throw new Error("Failed to update order");
+  }
+
+  return await res.data;
+}
 
 export const orderService = {
   getOrder,
