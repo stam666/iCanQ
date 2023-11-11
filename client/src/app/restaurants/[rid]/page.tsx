@@ -17,7 +17,6 @@ export default function RestaurantDetailPage({
 }: {
   params: { rid: string };
 }) {
-  //const param = useParams();
   const urlParams = useSearchParams();
   const restaurantName = urlParams.get("name");
   const router = useRouter();

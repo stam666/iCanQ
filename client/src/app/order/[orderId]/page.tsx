@@ -1,9 +1,17 @@
 "use client";
-import { IOrder } from "@/models/order.model";
+import { orderService } from "@/libs/orderService";
+import { IOrder, OrderStatus } from "@/models/order.model";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import {
+  redirect,
+  useParams,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useState } from "react";
+
+const statuses = ["pending", "cooking", "complete"];
 
 const OrderPage = ({ params }: { params: { orderId: string } }) => {
   const { data: session } = useSession({
@@ -12,58 +20,44 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
       redirect("/login");
     },
   });
-  const [order, setOrder] = useState<IOrder>({});
-  const [orderStatus, setOrderStatus] = useState("Pending");
-
+  const router = useRouter();
+  const param = useParams();
+  const orderId = param.orderId as string;
+  const [totalOrder, setTotalOrder] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>(
+    OrderStatus.Pending
+  );
+  const getMyorder = async () => {
+    if (orderId) {
+      const res = await orderService.getOrder(orderId);
+      if (res.status === OrderStatus.Completed) {
+        router.push("/review");
+      }
+      setOrderStatus(res.status);
+      setTotalOrder(res.orderItems.length);
+      setPrice(res.totalPrice);
+    }
+  };
   useEffect(() => {
     //fetch order details
-    const statuses = ["Pending", "Cooking", "Complete"];
-    let currentIndex = 0;
-
-    const interval = setInterval(() => {
-      setOrderStatus(statuses[currentIndex]);
-      currentIndex = (currentIndex + 1) % statuses.length;
-    }, 5000); // Update status every 5 seconds
-
+    const interval = setInterval(getMyorder, 5000);
     return () => clearInterval(interval);
   }, []);
 
   let imageUrl = "https://media.giphy.com/media/QPQ3xlJhqR1BXl89RG/giphy.gif";
 
   // Change the image URL for the "Cooking" stage
-  if (orderStatus === "Cooking") {
+  if (orderStatus === OrderStatus.Preparing) {
     imageUrl = "https://media.giphy.com/media/CNocEFcF9IBegtgW3q/giphy.gif";
   }
   return (
-    // <Box
-    //   sx={{
-    //     backgroundColor: "orange",
-    //     height: "100vh",
-    //     display: "flex",
-    //     justifyContent: "center",
-    //     alignItems: "center",
-    //   }}
-    // >
-    //   <Card sx={{ minWidth: 275 }}>
-    //     <CardContent>
-    //       <Typography variant="h5" component="div" sx={{ mb: 2 }}>
-    //         Order Pending
-    //       </Typography>
-    //       <Typography variant="body1" sx={{ mb: 1 }}>
-    //         Your order is currently being processed.
-    //       </Typography>
-    //       <Typography variant="body2" color="text.secondary">
-    //         Please wait for further updates regarding your order status.
-    //       </Typography>
-    //     </CardContent>
-    //   </Card>
-    // </Box>
     <main className="min-h-screen bg-primary p-8 flex justify-center items-center">
       <div className="bg-white rounded-2xl p-4 shadow-lg space-y-4 w-full text-center">
         <div className="text-2xl text-white-dark-hover p-2">
           {orderStatus}...
         </div>
-        {orderStatus !== "Complete" && (
+        {orderStatus !== OrderStatus.Completed && (
           <div className="flex justify-center">
             {" "}
             {/* Flex container for horizontal centering */}
@@ -71,13 +65,17 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
           </div>
         )}
         <div className="text-white-dark-hover p-2">
-          {orderStatus === "Pending"
+          {orderStatus === OrderStatus.Pending
             ? "Wait for the restaurant to confirm your order"
-            : orderStatus === "Cooking"
+            : orderStatus === OrderStatus.Preparing
             ? "Your order is being prepared"
-            : orderStatus === "Complete"
+            : orderStatus === OrderStatus.Completed
             ? "Your order is ready for pickup"
             : null}
+          <div className="flex pt-2 text-primary justify-between text-xs font-medium">
+            <p>Total: {totalOrder} menu</p>
+            <p>Total Price: {price} baht</p>
+          </div>
         </div>
       </div>
     </main>
