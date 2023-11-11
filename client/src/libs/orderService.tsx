@@ -73,8 +73,30 @@ const updateOrder = async (orderId: string, status: OrderStatus) => {
   return await res.data;
 }
 
+const cancelOrder = async (orderId: string) => {
+  const session = await getSession();
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
+  const res = await axios.put(
+    `${process.env.NEXT_PUBLIC_API_URL}/order/cancel/${orderId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${session.user.token}`,
+      },
+    }
+  );
+  if (!res) {
+    throw new Error("Failed to cancel order");
+  }
+
+  return await res.data;
+}
+
 export const orderService = {
   getOrder,
   placeOrder,
   updateOrder,
+  cancelOrder,
 };
