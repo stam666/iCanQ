@@ -4,6 +4,7 @@ import { IOrder, Queue } from "../resources/interfaces/order.type";
 
 const MQ_HOST = process.env.MQ_HOST || "localhost";
 const MQ_URL = `amqp://${MQ_HOST}:5672`;
+const MQ_URI = process.env.MQ_URI || "amqp://localhost:5672";
 const EXCHANGE = "order";
 
 let orderChannel = null;
@@ -11,9 +12,9 @@ let orderChannel = null;
 
 const amqpConnect = async () => {
   try {
-    const connection = await amqp.connect(MQ_URL);
+    const connection = await amqp.connect(MQ_URI);
     orderChannel = await connection.createChannel();
-    console.log("AMQP - connection established at " + MQ_URL);
+    console.log("AMQP - connection established at " + MQ_URI);
     await orderChannel.assertExchange(EXCHANGE, "direct", { durable: false });
   } catch (error) {
     console.log(error);
