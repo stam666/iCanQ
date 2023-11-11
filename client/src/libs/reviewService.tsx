@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 async function getReviewRestaurant(restaurantId: string) {
   const res = await axios.get(
@@ -13,9 +14,18 @@ async function createReview(
   reviewText: string,
   rating: number
 ) {
+  const session = await getSession();
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
   const res = await axios.post(
     process.env.NEXT_PUBLIC_API_URL + `/review/restaurant/${restaurantId}`,
-    { userId, restaurantId, reviewText, rating }
+    { userId, restaurantId, reviewText, rating },
+    {
+      headers: {
+        Authorization: `Bearer ${session.user.token}`,
+      },
+    }
   );
   return await res.data;
 }

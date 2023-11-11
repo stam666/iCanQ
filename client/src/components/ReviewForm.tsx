@@ -9,6 +9,7 @@ interface Props {
   rating?: number;
   reviewText?: string;
   reviewId?: string;
+  restaurantId?: string;
   handleEditReview?: () => void;
 }
 
@@ -17,13 +18,13 @@ export default function ReviewForm({
   rating,
   reviewText,
   reviewId,
+  restaurantId,
   handleEditReview,
 }: Props) {
   const router = useRouter();
   const { data: session } = useSession();
   const [star, setStar] = useState<number>(0);
   const [review, setReview] = useState<string>("");
-  const restaurantId = "";
   const handleStarClick = (star: number) => {
     setStar(star);
   };
@@ -46,14 +47,15 @@ export default function ReviewForm({
     const userId = session?.user._id;
     if (userId) {
       if (variant === "Create") {
-        const res = await reviewService.createReview(
-          userId,
-          restaurantId,
-          review,
-          star
-        );
+        if (restaurantId) {
+          const res = await reviewService.createReview(
+            userId,
+            restaurantId,
+            review,
+            star
+          );
+        }
         router.push("/");
-        return res;
       } else {
         if (reviewId) {
           const reviewText = review;
