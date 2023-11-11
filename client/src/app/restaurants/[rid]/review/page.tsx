@@ -88,6 +88,7 @@ export default function RestaurantReviewPage() {
       <div className="relative">
         <div className="flex flex-row justify-between pt-[60px] text-white">
           <ArrowBackIosNewIcon
+            className="cursor-pointer"
             onClick={() => {
               if (isEditReview) {
                 setIsEditReview(false);

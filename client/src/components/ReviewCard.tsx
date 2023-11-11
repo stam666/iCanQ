@@ -34,8 +34,11 @@ export default function ReviewCard({
             <p className="text-white-normal-active">{star}</p>
             <p className="text-white-dark ">Rating and reviews</p>
           </div>
-          {session?.user._id === uid && (
-            <div className="px-4 text-[#3D79FE]" onClick={handleEditReview}>
+          {handleEditReview && session?.user._id === uid && (
+            <div
+              className="px-4 text-[#3D79FE] cursor-pointer"
+              onClick={handleEditReview}
+            >
               Edit
             </div>
           )}
