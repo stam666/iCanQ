@@ -10,6 +10,7 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 const statuses = ["pending", "cooking", "complete"];
 
@@ -32,17 +33,33 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
     if (orderId) {
       const res = await orderService.getOrder(orderId);
       if (res.status === OrderStatus.Completed) {
-        router.push("/review");
+        // add delay
+        setTimeout(() => {
+          router.push("/review");
+        }, 2000);
       }
       setOrderStatus(res.status);
       setTotalOrder(res.orderItems.length);
       setPrice(res.totalPrice);
     }
   };
+
   useEffect(() => {
-    //fetch order details
-    const interval = setInterval(getMyorder, 5000);
-    return () => clearInterval(interval);
+    getMyorder();
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+      query: { token: session?.user.token },
+    });
+
+    socket.on("update-order", (order: IOrder) => {
+      console.log("order updated:" + order);
+      if (order._id == orderId) {
+        getMyorder();
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   let imageUrl = "https://media.giphy.com/media/QPQ3xlJhqR1BXl89RG/giphy.gif";

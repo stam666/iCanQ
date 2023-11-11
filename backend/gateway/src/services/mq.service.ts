@@ -31,7 +31,6 @@ const assertAndConsumeQueue = async (
   console.log(`AMQP - consume queue: ${queue}`);
   orderChannel.prefetch(1);
   orderChannel.consume(queue, (msg: ConsumeMessage) => {
-    console.log(`AMQP - consume order: ${msg.content.toString()}`);
     const order: IOrder = JSON.parse(msg.content.toString());
     onOrderConsumed(order);
     orderChannel.ack(msg);
