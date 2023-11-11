@@ -3,15 +3,20 @@ import restaurantService from "@/libs/restaurantService";
 import { IRestaurant } from "@/models/restaurant.model";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { Button } from "@mui/material";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import CookingPanel from "@/components/CookingPanel";
+import PendingPanel from "@/components/PendingPanel";
 
 export default function MyRestaurantPage() {
   const { data: session } = useSession();
   const [restaurant, setRestaurant] = useState<IRestaurant>();
   const [isOpen, setIsOpen] = useState<boolean>();
+  const [selectedSection, setSelectedSection] = useState<string>("pending");
+
   const router = useRouter();
   useEffect(() => {
     const getMyRestaurant = async () => {
@@ -28,11 +33,13 @@ export default function MyRestaurantPage() {
     };
     getMyRestaurant();
   }, [session]);
+
   const handleSetStatus = () => {
     if (restaurant && isOpen != undefined)
       restaurantService.setMyRestaurantStatus(restaurant?._id, !isOpen);
     setIsOpen(!isOpen);
   };
+
   return (
     <main className="h-screen bg-gradient-to-tr from-brown-light-active via-white to-brown-light-active p-8 space-y-4">
       <div className="flex flex-row justify-between">
@@ -85,6 +92,50 @@ export default function MyRestaurantPage() {
           )}
         </div>
       </div>
+      {isOpen && (
+        <>
+          <div className="w-full flex justify-between space-x-2">
+            <Button
+              className="flex-grow"
+              onClick={() => setSelectedSection("pending")}
+            >
+              <div
+                className={`flex-grow font-medium border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center hover:bg-primary hover:text-white transition-all duration-200 ${
+                  selectedSection === "pending" ? "bg-primary text-white" : ""
+                }`}
+              >
+                pending
+              </div>
+            </Button>
+            <Button
+              className="flex-grow"
+              onClick={() => setSelectedSection("cooking")}
+            >
+              <div
+                className={`flex-grow font-medium border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center hover:bg-primary hover:text-white transition-all duration-200 ${
+                  selectedSection === "cooking" ? "bg-primary text-white" : ""
+                }`}
+              >
+                cooking
+              </div>
+            </Button>
+            <Button
+              className="flex-grow"
+              onClick={() => setSelectedSection("complete")}
+            >
+              <div
+                className={`flex-grow font-medium border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center hover:bg-primary hover:text-white transition-all duration-200 ${
+                  selectedSection === "complete" ? "bg-primary text-white" : ""
+                }`}
+              >
+                complete
+              </div>
+            </Button>
+          </div>
+          {selectedSection === "pending" && <PendingPanel />}
+          {selectedSection === "cooking" && <CookingPanel />}
+        </>
+      )}
     </main>
   );
 }
