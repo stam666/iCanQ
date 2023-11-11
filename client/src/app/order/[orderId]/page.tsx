@@ -31,12 +31,12 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
   );
   const getMyorder = async () => {
     if (orderId) {
-      const res = await orderService.getOrder(orderId);
+      const res= await orderService.getOrder(orderId);
       if (res.status === OrderStatus.Completed) {
         // add delay
         setTimeout(() => {
-          router.push("/review");
-        }, 2000);
+          router.push(`/review/${res.restaurantId}`);
+        }, 3000);
       }
       setOrderStatus(res.status);
       setTotalOrder(res.orderItems.length);
