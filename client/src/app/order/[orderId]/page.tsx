@@ -39,9 +39,17 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
       setPrice(res.totalPrice);
     }
   };
+
+  const handleCancelOrder = async () => {
+    if (orderId) {
+      const res = await orderService.cancelOrder(orderId);
+      console.log(res);
+      router.push("/");
+    }
+  };
   useEffect(() => {
     //fetch order details
-    const interval = setInterval(getMyorder, 5000);
+    const interval = setInterval(getMyorder, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -64,14 +72,26 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
             <img src={imageUrl} alt="Loading GIF" />
           </div>
         )}
-        <div className="text-white-dark-hover p-2">
-          {orderStatus === OrderStatus.Pending
-            ? "Wait for the restaurant to confirm your order"
-            : orderStatus === OrderStatus.Preparing
-            ? "Your order is being prepared"
-            : orderStatus === OrderStatus.Completed
-            ? "Your order is ready for pickup"
-            : null}
+        <div className="flex flex-col text-white-dark-hover p-2 gap-3">
+          <p>
+            {orderStatus === OrderStatus.Pending
+              ? "Wait for the restaurant to confirm your order"
+              : orderStatus === OrderStatus.Preparing
+              ? "Your order is being prepared"
+              : orderStatus === OrderStatus.Completed
+              ? "Your order is ready for pickup"
+              : null}
+          </p>
+          {/* for cancel order */}
+          {/* <div>
+            <button
+              className="border w-fit border-primary text-primary rounded-md p-1.5 py-0.5"
+              onClick={handleCancelOrder}
+            >
+              Cancel Order
+            </button>
+          </div> */}
+
           <div className="flex pt-2 text-primary justify-between text-xs font-medium">
             <p>Total: {totalOrder} menu</p>
             <p>Total Price: {price} baht</p>

@@ -71,14 +71,14 @@ const updateOrder = async (orderId: string, status: OrderStatus) => {
   }
 
   return await res.data;
-}
+};
 
 const cancelOrder = async (orderId: string) => {
   const session = await getSession();
   if (!session) {
     throw new Error("Unauthorized");
   }
-  const res = await axios.get(
+  const res = await axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/order/cancel/${orderId}`,
     {
       headers: {
@@ -117,4 +117,5 @@ export const orderService = {
   getOrder,
   placeOrder,
   updateOrder,
+  cancelOrder,
 };
