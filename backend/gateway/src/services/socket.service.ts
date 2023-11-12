@@ -1,7 +1,8 @@
 import { Server } from "http";
 import { Server as SocketIO } from "socket.io";
 import { IOrder } from "../resources/interfaces/order.type";
-import { AuthMiddleware, AuthSocket } from "../middlewares/auth.middleware";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { Socket } from "socket.io";
 
 let io: SocketIO = null;
 
@@ -12,20 +13,14 @@ const configureSocket = async (server: Server) => {
     },
   });
 
-  io.use((socket: AuthSocket, next) => {
-    AuthMiddleware.authSocket(socket, next);
+
+  io.use((socket: Socket, next) => {
+    AuthMiddleware.authSocketThenJoin(socket, next);
   });
 
-  io.on("connection", (socket: AuthSocket) => {
-    console.log(`Socket: ${socket.room} connected`);
-
-    socket.on("open", async () => {
-      console.log(`User:${socket.room} connect to Socket:${socket.room}`);
-      socket.join(socket.room);
-    });
-
+  io.on("connection", (socket: Socket) => {
     socket.on("disconnect", () => {
-      console.log(`Socket: ${socket.room} disconnected`);
+      console.log(`Socket: ${socket.id} disconnected`);
     });
   });
 };
@@ -33,10 +28,9 @@ const configureSocket = async (server: Server) => {
 const triggerOrderCreatedToRestaurant = async (order: IOrder) => {
   try {
     const { restaurantId } = order;
-    await io
-      .to(restaurantId)
-      .emit("new-order", { order });
-    console.log("Order emitted successfully");
+    const restaurantRoom = `restaurant:${restaurantId}`;
+    io.to(restaurantRoom).emit("new-order", order);
+    console.log(`Order emitted to room: ${restaurantRoom} successfully`);
   } catch (error) {
     console.error("Error emitting order:", error);
   }
@@ -45,17 +39,16 @@ const triggerOrderCreatedToRestaurant = async (order: IOrder) => {
 const triggerOrderUpdatedToCustomer = async (order: IOrder) => {
   try {
     const { userId } = order;
-    await io
-      .to(userId)
-      .emit("update-order", { order });
-    console.log("Order emitted successfully");
+    const userRoom = `user:${userId}`;
+    io.to(userRoom).emit("update-order", order);
+    console.log(`Order emitted to room: ${userRoom} successfully`);
   } catch (error) {
     console.error("Error emitting order:", error);
   }
-}
+};
 
 export const SocketsService = {
   configureSocket: configureSocket,
   triggerOrderCreatedToRestaurant: triggerOrderCreatedToRestaurant,
-  triggerOrderUpdatedToCustomer: triggerOrderUpdatedToCustomer
+  triggerOrderUpdatedToCustomer: triggerOrderUpdatedToCustomer,
 };

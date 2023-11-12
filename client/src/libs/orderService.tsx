@@ -26,7 +26,7 @@ const placeOrder = async (restaurantId: string, orderItems: IOrderItem[]) => {
   );
   if (!res) {
     throw new Error("Failed to place order");
-  } 
+  }
   return res.data;
 };
 
@@ -71,14 +71,33 @@ const updateOrder = async (orderId: string, status: OrderStatus) => {
   }
 
   return await res.data;
-}
+};
+
+const restaurantGetAllOrder = async () => {
+  const session = await getSession();
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/order/restaurant`,
+    {
+      headers: {
+        Authorization: `Bearer ${session.user.token}`,
+      },
+    }
+  );
+  if (!res) {
+    throw new Error("Failed to get all restaurant order");
+  }
+  return await res.data;
+};
 
 const cancelOrder = async (orderId: string) => {
   const session = await getSession();
   if (!session) {
     throw new Error("Unauthorized");
   }
-  const res = await axios.put(
+  const res = await axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/order/cancel/${orderId}`,
     {},
     {
@@ -92,11 +111,12 @@ const cancelOrder = async (orderId: string) => {
   }
 
   return await res.data;
-}
+};
 
 export const orderService = {
   getOrder,
   placeOrder,
   updateOrder,
   cancelOrder,
+  restaurantGetAllOrder,
 };

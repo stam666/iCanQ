@@ -12,10 +12,6 @@ export interface RestaurantRequest extends AuthenticatedRequest {
   restaurant: IRestaurant;
 }
 
-export interface AuthSocket extends Socket {
-  room: string;
-}
-
 const protect: RequestHandler = async (expressReq, res, next) => {
   const req = expressReq as AuthenticatedRequest;
   let token;
@@ -80,7 +76,7 @@ const authorize = (...roles: string[]) => {
   };
 };
 
-const authSocket = async (socket: AuthSocket, next) => {
+const authSocketThenJoin = async (socket: Socket, next) => {
   const token = socket.handshake.query?.token;
   if (!token || token === "null") {
     return next(new Error("Not authorized to access this route"));
@@ -92,14 +88,17 @@ const authSocket = async (socket: AuthSocket, next) => {
       return next(new Error("Not authorized socket"));
     }
     // if restaurant, join restaurant room
+    let room: string;
     if (user.role === "restaurant") {
       const restaurant = await RestaurantService.getRestaurantByUserId(
         user._id
       );
-      socket.room = restaurant._id;
+      room = `restaurant:${restaurant._id}`;
     } else {
-      socket.room = user._id;
+      room = `user:${user._id}`;
     }
+    socket.join(room);
+    console.log(`Socket: ${socket.id} joined room: ${room}`);
     next();
   } catch (err) {
     console.error(err);
@@ -110,5 +109,5 @@ const authSocket = async (socket: AuthSocket, next) => {
 export const AuthMiddleware = {
   protect,
   authorize,
-  authSocket,
+  authSocketThenJoin: authSocketThenJoin,
 };
