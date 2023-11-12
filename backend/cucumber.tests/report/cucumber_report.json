@@ -1,0 +1,254 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "auth-service;successfully-signin-as-a-customer-in-icanq",
+        "keyword": "Scenario Outline",
+        "line": 9,
+        "name": "Successfully SignIn as a customer in iCanQ",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "I am a customer",
+            "match": {
+              "location": "src/steps/auth.js:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3720454
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "I sign in with \"parn_customer\" and \"12345678\"",
+            "match": {
+              "location": "src/steps/auth.js:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2434132312
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "I get response code 200",
+            "match": {
+              "location": "src/steps/auth.js:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 221555
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@auth-service",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "auth-service",
+    "line": 2,
+    "keyword": "Feature",
+    "name": "Auth Service",
+    "tags": [
+      {
+        "name": "@auth-service",
+        "line": 1
+      }
+    ],
+    "uri": "src/features/auth.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "order-service;view-all-resaturants",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "View all resaturants",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "I logged in as a customer",
+            "match": {
+              "location": "src/steps/order.js:14"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 873631003
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "I get all restaurants",
+            "match": {
+              "location": "src/steps/order.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 76286467
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "I should see all restaurants",
+            "match": {
+              "location": "src/steps/order.js:35"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 237691
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@order-service",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "order-service;view-all-menus-of-selected-restaurant",
+        "keyword": "Scenario Outline",
+        "line": 14,
+        "name": "View all menus of selected restaurant",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 9,
+            "name": "I logged in as a customer",
+            "match": {
+              "location": "src/steps/order.js:14"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 162357446
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 10,
+            "name": "I get all menus of restaurant '6528e3f488f43121d4ac7c18'",
+            "match": {
+              "location": "src/steps/order.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 304379552
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 11,
+            "name": "I should see menuId : 10 of selected restaurant",
+            "match": {
+              "location": "src/steps/order.js:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 229543
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@order-service",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "order-service;place-new-order",
+        "keyword": "Scenario Outline",
+        "line": 22,
+        "name": "Place new order",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 17,
+            "name": "I logged in as a customer",
+            "match": {
+              "location": "src/steps/order.js:14"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 161065907
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 18,
+            "name": "I place new order with '10' of restaurant '6528e3f488f43121d4ac7c18'",
+            "match": {
+              "location": "src/steps/order.js:52"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 156410547
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "I should see order status 'pending'",
+            "match": {
+              "location": "src/steps/order.js:82"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 357090
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@order-service",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "order-service",
+    "line": 2,
+    "keyword": "Feature",
+    "name": "Order Service",
+    "tags": [
+      {
+        "name": "@order-service",
+        "line": 1
+      }
+    ],
+    "uri": "src/features/order.feature"
+  }
+]

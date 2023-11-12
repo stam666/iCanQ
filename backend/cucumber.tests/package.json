@@ -1,0 +1,19 @@
+{
+  "name": "cucumber.tests",
+  "version": "1.22.19",
+  "description": "BDD test",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "cucumber-js ./src/features/*.feature --require './src/steps/*.js' -f json:./report/cucumber_report.json ; node index.js;"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.0.1",
+    "cucumber-html-reporter": "^7.1.1"
+  },
+  "dependencies": {
+    "axios": "^1.6.1",
+    "@cucumber/cucumber": "^10.0.1",
+    "cucumber-html-reporter": "^7.1.1"
+  }
+}
