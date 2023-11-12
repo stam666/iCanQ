@@ -41,7 +41,7 @@ export default function SignupPage() {
     };
     return (
       <span
-        className="text-blue text-sm font-normal underline underline-offset-1"
+        className="text-blue text-sm font-normal underline underline-offset-1 hover:cursor-pointer"
         onClick={handleLinkToSignIn}
       >
         Sign in
