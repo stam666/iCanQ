@@ -107,14 +107,14 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
               : null}
           </p>
           {/* for cancel order */}
-          {/* <div>
+          <div>
             <button
               className="border w-fit border-primary text-primary rounded-md p-1.5 py-0.5"
               onClick={() => handleCancelOrder()}
             >
               Cancel Order
             </button>
-          </div> */}
+          </div>
 
           <div className="flex pt-2 text-primary justify-between text-xs font-medium">
             <p>Total: {totalOrder} menu</p>

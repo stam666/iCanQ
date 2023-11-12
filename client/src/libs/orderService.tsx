@@ -78,8 +78,10 @@ const cancelOrder = async (orderId: string) => {
   if (!session) {
     throw new Error("Unauthorized");
   }
+
   const res = await axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/order/cancel/${orderId}`,
+    {},
     {
       headers: {
         Authorization: `Bearer ${session.user.token}`,
