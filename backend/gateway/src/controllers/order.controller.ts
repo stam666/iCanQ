@@ -28,7 +28,6 @@ const getOrder = async (req: Request, res: Response) => {
     { orderId: req.params.orderId },
     (err: ServerErrorResponse, data: IOrder) => {
       if (!err) {
-        console.log(data);
         res.status(200).json(data);
       } else {
         res.status(500).json({ message: "Error getting order" });

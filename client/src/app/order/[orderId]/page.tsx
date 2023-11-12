@@ -4,6 +4,7 @@ import { IOrder, OrderStatus } from "@/models/order.model";
 import { useSession } from "next-auth/react";
 import { redirect, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 const imgUrl = {
   pending: "https://media.giphy.com/media/QPQ3xlJhqR1BXl89RG/giphy.gif",
@@ -68,22 +69,24 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
   }, [orderStatus]);
 
   useEffect(() => {
-    //fetch order details
-    var index = 0;
-    //test sample
-    // const state = [
-    //   OrderStatus.Pending,
-    //   OrderStatus.Preparing,
-    //   OrderStatus.Completed,
-    // ];
-    // const interval = setInterval(() => {
-    //   if (index == 2) router.push(`/review/${restaurant}`);
-    //   setOrderStatus(state[index]);
-    //   index += 1;
-    // }, 3000);
-    const interval = setInterval(getMyorder, 3000);
-    return () => clearInterval(interval);
-  }, [restaurant]);
+    getMyorder();
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+      query: { token: session?.user.token },
+    });
+
+    socket.on("update-order", (order: IOrder) => {
+      console.log("order updated:" + order);
+      if (order._id == orderId) {
+        getMyorder();
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  let imageUrl = "https://media.giphy.com/media/QPQ3xlJhqR1BXl89RG/giphy.gif";
 
   return (
     <main className="min-h-screen bg-primary p-8 flex justify-center items-center">
