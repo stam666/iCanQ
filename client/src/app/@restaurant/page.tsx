@@ -48,7 +48,7 @@ export default function MyRestaurantPage() {
         <div
           onClick={() => signOut({ callbackUrl: "/login" })}
           className={
-            "border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center space-x-2 hover:bg-primary hover:text-white transition-all duration-200"
+            "border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center space-x-2 hover:bg-primary hover:text-white transition-all duration-200 select-none hover:cursor-pointer"
           }
         >
           <SettingsIcon />
