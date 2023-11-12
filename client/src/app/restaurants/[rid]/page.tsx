@@ -25,7 +25,7 @@ export default function RestaurantDetailPage({
   const [review, setReview] = useState<IReview[]>([]);
   const totalSum = cart.reduce(
     (sum, item) => sum + item.price * item.amount,
-    0
+    0,
   );
   const handleAddToCart = (order: IOrderItem) => {
     setCart((prevState) => [...prevState, order]);
@@ -83,7 +83,7 @@ export default function RestaurantDetailPage({
           <MenuPanel params={params} addToCart={handleAddToCart} />
         </div>
         {cart.length != 0 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-3xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px]">
+          <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-3xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px] z-10">
             <button
               className="p-4 font-medium text-white w-full bg-primary rounded-full flex flex-row justify-between hover:bg-brown-dark-hover transition-all duration-30"
               onClick={() => {
@@ -134,7 +134,7 @@ export default function RestaurantDetailPage({
             </div>
           ))}
         </div>
-        <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-2xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px]">
+        <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-2xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px] z-10">
           <div className="flex flex-row justify-between">
             <div className="text-2xl">Total</div>
             <div className="text-2xl">{totalSum}฿</div>
