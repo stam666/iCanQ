@@ -15,7 +15,6 @@ import { RestaurantService } from "../services/restaurant.service";
 const getAllOrder = async (req: Request, res: Response) => {
   OrderClient.getAllOrder({}, (err: ServerErrorResponse, data: IOrderList) => {
     if (!err) {
-      console.log(data);
       res.status(200).json(data);
     } else {
       res.status(500).json({ message: "Error getting orders" });
@@ -77,7 +76,6 @@ const getRestaurantOrders = async (req: RestaurantRequest, res: Response) => {
     { restaurantId },
     (err: ServerErrorResponse, data: IOrderList) => {
       if (!err) {
-        console.log(data);
         res.status(200).json(data);
       } else {
         res.status(500).json({ message: "Error getting orders" });

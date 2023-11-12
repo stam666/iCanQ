@@ -23,23 +23,26 @@ const configureSocket = async (server: Server) => {
   });
 };
 
-const triggerOrderCreatedToRestaurant = async (order: IOrder) => {
+const triggerOrderCreated = async (order: IOrder) => {
   try {
     const { restaurantId } = order;
     const restaurantRoom = `restaurant:${restaurantId}`;
-    io.to(restaurantRoom).emit("new-order", order);
+    io.to(restaurantRoom).emit("orderCreated", order);
     console.log(`Order emitted to ${restaurantRoom} successfully`);
   } catch (error) {
     console.error("Error emitting order:", error);
   }
 };
 
-const triggerOrderUpdatedToCustomer = async (order: IOrder) => {
+const triggerOrderUpdated = async (order: IOrder) => {
   try {
-    const { userId } = order;
+    const { userId, restaurantId } = order;
     const userRoom = `user:${userId}`;
-    io.to(userRoom).emit("update-order", order);
-    console.log(`Order emitted to ${userRoom} successfully`);
+    const restaurantRoom = `restaurant:${restaurantId}`;
+    io.to(userRoom).to(restaurantRoom).emit("orderUpdated", order);
+    console.log(
+      `Order emitted to ${userRoom} and ${restaurantRoom} successfully`
+    );
   } catch (error) {
     console.error("Error emitting order:", error);
   }
@@ -47,6 +50,6 @@ const triggerOrderUpdatedToCustomer = async (order: IOrder) => {
 
 export const SocketsService = {
   configureSocket: configureSocket,
-  triggerOrderCreatedToRestaurant: triggerOrderCreatedToRestaurant,
-  triggerOrderUpdatedToCustomer: triggerOrderUpdatedToCustomer,
+  triggerOrderCreated: triggerOrderCreated,
+  triggerOrderUpdated: triggerOrderUpdated,
 };
