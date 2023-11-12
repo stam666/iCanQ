@@ -34,7 +34,7 @@ export default function ReviewPage() {
       if (restaurant) {
         try {
           const review = await reviewService.getReviewRestaurant(
-            restaurant?._id
+            restaurant?._id,
           );
           setReview(review.data);
         } catch (error) {
@@ -50,7 +50,7 @@ export default function ReviewPage() {
       <div className="h-[25vh] w-full -m-8 z-0 bg-primary absolute"></div>
       <div className="relative z-10">
         <div className="flex flex-row justify-between pt-[60px] text-white">
-          <Link href="/myrestaurant" className="">
+          <Link href="/menu" className="">
             <ArrowBackIosNewIcon />
           </Link>
           <div className="text-2xl font-medium text-center">

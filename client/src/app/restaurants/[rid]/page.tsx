@@ -1,8 +1,11 @@
 "use client";
-import MenuPanel from "@/components/MenuPanel";
+import MenuCard from "@/components/MenuCard";
+import MenuSheet from "@/components/MenuSheet";
 import ReviewCard from "@/components/ReviewCard";
-import reviewService from "@/libs/reviewService";
 import { orderService } from "@/libs/orderService";
+import restaurantService from "@/libs/restaurantService";
+import reviewService from "@/libs/reviewService";
+import { IMenu } from "@/models/menu.model";
 import { IOrderItem } from "@/models/order.model";
 import { IReview } from "@/models/review.model";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -24,8 +27,37 @@ export default function RestaurantDetailPage({
   const [review, setReview] = useState<IReview[]>([]);
   const totalSum = cart.reduce(
     (sum, item) => sum + item.price * item.amount,
-    0
+    0,
   );
+  const [restaurantMenu, setRestaurantMenu] = useState<IMenu[]>([]);
+  const [selectedMenu, setSelectedMenu] = useState<IMenu | null>(null);
+  useEffect(() => {
+    // Define an async function to fetch restaurant menu
+    const fetchRestaurantMenu = async () => {
+      try {
+        const menu = await restaurantService.getRestaurantMenu(params.rid);
+        setRestaurantMenu(menu);
+      } catch (error) {
+        // Handle errors if necessary
+        console.error("Error fetching restaurant menu: ", error);
+      }
+    };
+
+    // Call the async function immediately
+    fetchRestaurantMenu();
+  }, [params.rid]);
+  const [amount, setAmount] = useState(0);
+  const [note, setNote] = useState("");
+  const handleMenuCardClick = (menu: IMenu) => {
+    console.log(menu);
+    setSelectedMenu(menu);
+  };
+
+  const closeBottomSheet = () => {
+    setNote("");
+    setAmount(0);
+    setSelectedMenu(null);
+  };
   const handleAddToCart = (order: IOrderItem) => {
     setCart((prevState) => [...prevState, order]);
   };
@@ -58,7 +90,7 @@ export default function RestaurantDetailPage({
   const [isSummary, setIsSummary] = useState(false);
   if (!isSummary)
     return (
-      <main className="min-h-screen bg-white p-8">
+      <main className="min-h-screen bg-white p-8 pb-40">
         <div className="h-1/4 w-full -m-8 z-0 bg-primary absolute"></div>
         <div className="relative z-10">
           <div className="flex flex-row justify-between pt-[60px] text-white">
@@ -79,10 +111,34 @@ export default function RestaurantDetailPage({
             rid={`${params.rid}`}
           />
           <div className="text-2xl font-medium mt-8">Menu</div>
-          <MenuPanel params={params} addToCart={handleAddToCart} />
+          {restaurantMenu.map((menu: IMenu) => (
+            <div
+              key={menu.menuId}
+              onClick={() => handleMenuCardClick(menu)}
+              className="mt-8"
+            >
+              <MenuCard
+                key={menu.menuId}
+                name={menu.name}
+                price={menu.price}
+                imgSrc={"/images/food1.jpeg"}
+              />
+            </div>
+          ))}
         </div>
+        {selectedMenu && (
+          <MenuSheet
+            amount={amount}
+            note={note}
+            onSetAmount={setAmount}
+            onSetNote={setNote}
+            closeBottomSheet={closeBottomSheet}
+            selectedMenu={selectedMenu}
+            handleAddToCart={handleAddToCart}
+          />
+        )}
         {cart.length != 0 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-3xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px]">
+          <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-3xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px] z-10">
             <button
               className="p-4 font-medium text-white w-full bg-primary rounded-full flex flex-row justify-between hover:bg-brown-dark-hover transition-all duration-30"
               onClick={() => {
@@ -107,7 +163,7 @@ export default function RestaurantDetailPage({
           <div className="text-2xl font-medium text-center">Summary</div>
           <div></div>
         </div>
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-6 pb-40">
           {cart.map((order: IOrderItem, index: number) => (
             <div key={index}>
               <div className="flex flex-row rounded-2xl bg-white shadow-lg w-full">
@@ -133,7 +189,7 @@ export default function RestaurantDetailPage({
             </div>
           ))}
         </div>
-        <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-2xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px]">
+        <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-2xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px] z-10">
           <div className="flex flex-row justify-between">
             <div className="text-2xl">Total</div>
             <div className="text-2xl">{totalSum}฿</div>
