@@ -28,37 +28,30 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
   );
   const [img, setImg] = useState<string>(imgUrl.pending);
 
-  const [restaurant, setRestaurant] = useState<string>("");
   const getMyorder = async () => {
     if (orderId) {
       const res= await orderService.getOrder(orderId);
       if (res.status === OrderStatus.Completed) {
-        router.push(`/review/${restaurant}`);
+        setTimeout(() => {
+          router.push(`/review/${res.restaurantId}`);
+        }, 3000);
+      } else if (res.status === OrderStatus.Cancelled) {
+        setTimeout(() => {
+          router.push(`/`);
+        }, 3000);
       }
       setOrderStatus(res.status);
+      setTotalOrder(res.orderItems.length);
+      setPrice(res.totalPrice);
     }
   };
 
   const handleCancelOrder = async () => {
     if (orderId) {
       const res = await orderService.cancelOrder(orderId);
-      console.log(res);
-      router.push("/");
+      console.log(`cancel order: ${res}`);
     }
   };
-
-  useEffect(() => {
-    const getOrder = async () => {
-      if (orderId) {
-        const res = await orderService.getOrder(orderId);
-        setOrderStatus(res.status);
-        setTotalOrder(res.orderItems.length);
-        setPrice(res.totalPrice);
-        setRestaurant(res.restaurantId);
-      }
-    };
-    getOrder();
-  }, []);
 
   useEffect(() => {
     if (
