@@ -42,8 +42,15 @@ server.addService(orderProto.OrderService.service, {
   remove: OrderController.remove,
 });
 
-server.bindAsync(GRPC_URI, grpc.ServerCredentials.createInsecure(), () => {
-  server.start();
-
-  console.log(`⚡️[grpc server]: Order service is running at ${GRPC_URI}`);
-});
+server.bindAsync(
+  GRPC_URI,
+  grpc.ServerCredentials.createInsecure(),
+  (err, port) => {
+    if (err) {
+      console.error(`Server error: ${err.message}`);
+    } else {
+      server.start();
+      console.log(`⚡️[grpc server]: Order service is running at ${GRPC_URI} at port ${port}`);
+    }
+  }
+);

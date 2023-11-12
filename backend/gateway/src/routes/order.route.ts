@@ -4,14 +4,6 @@ import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-//customer routes
-router.get("/", OrderController.getAllOrder);
-router.get("/:orderId", OrderController.getOrder);
-router.get("/myorders", AuthMiddleware.protect, OrderController.getMyOrders);
-router.post("/", AuthMiddleware.protect, OrderController.placeOrder);
-router.patch("/cancel/:orderId", AuthMiddleware.protect, OrderController.cancelOrder);
-
-// restaurant routes
 router.get(
   "/restaurant",
   AuthMiddleware.protect,
@@ -24,5 +16,11 @@ router.patch(
   AuthMiddleware.authorize("restaurant"),
   OrderController.updateOrderStatus
 );
+
+router.get("/", OrderController.getAllOrder);
+router.get("/:orderId", OrderController.getOrder);
+router.get("/myorders", AuthMiddleware.protect, OrderController.getMyOrders);
+router.post("/", AuthMiddleware.protect, OrderController.placeOrder);
+router.patch("/cancel/:orderId", AuthMiddleware.protect, OrderController.cancelOrder);
 
 export const OrderRouter = router;

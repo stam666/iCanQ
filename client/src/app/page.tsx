@@ -1,7 +1,6 @@
 import HomeTopBar from "@/components/HomeTopBar";
 import RestaurantPanel from "@/components/RestaurantPanel";
 import SearchBar from "@/components/SearchBar";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function Home() {
   return (

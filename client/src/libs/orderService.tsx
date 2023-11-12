@@ -56,7 +56,7 @@ const updateOrder = async (orderId: string, status: OrderStatus) => {
     throw new Error("Unauthorized");
   }
   const res = await axios.put(
-    `${process.env.NEXT_PUBLIC_API_URL}/order/${orderId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/order/restaurant/status/${orderId}`,
     {
       status,
     },
@@ -117,4 +117,5 @@ export const orderService = {
   getOrder,
   placeOrder,
   updateOrder,
+  cancelOrder,
 };

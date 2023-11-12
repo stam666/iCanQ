@@ -3,8 +3,7 @@ import restaurantService from "@/libs/restaurantService";
 import { IRestaurant } from "@/models/restaurant.model";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -46,21 +45,20 @@ export default function MyRestaurantPage() {
               : "Are you hungry?"}
           </p>
         </div>
-        <Link href="/api/auth/signout">
-          <div
-            className={
-              "border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center space-x-2 hover:bg-primary hover:text-white transition-all duration-200"
-            }
-          >
-            <SettingsIcon />
-            <div className="font-medium">Log out</div>
-          </div>
-        </Link>
+        <div
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className={
+            "border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center space-x-2 hover:bg-primary hover:text-white transition-all duration-200 select-none hover:cursor-pointer"
+          }
+        >
+          <SettingsIcon />
+          <div className="font-medium">Log out</div>
+        </div>
       </div>
       <button
         className="mt-4 p-4 font-medium text-white w-full bg-primary rounded-full flex flex-row justify-between hover:bg-brown-dark-hover transition-all duration-30"
         onClick={() => {
-          router.push("myrestaurant/mymenu");
+          router.push("/menu");
         }}
       >
         <div className="">My Restaurant</div>
