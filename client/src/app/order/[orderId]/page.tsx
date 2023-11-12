@@ -4,6 +4,7 @@ import { IOrder, OrderStatus } from "@/models/order.model";
 import { useSession } from "next-auth/react";
 import { redirect, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 const imgUrl = {
   pending: "https://media.giphy.com/media/QPQ3xlJhqR1BXl89RG/giphy.gif",
@@ -28,13 +29,13 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
   const [img, setImg] = useState<string>(imgUrl.pending);
 
   const [restaurant, setRestaurant] = useState<string>("");
-  const getMyorder = async () => {
+
+  const fetchOrder = async () => {
     if (orderId) {
       const res = await orderService.getOrder(orderId);
-      if (res.status === OrderStatus.Completed) {
-        router.push(`/review/${restaurant}`);
-      }
       setOrderStatus(res.status);
+      setTotalOrder(res.orderItems.length);
+      setPrice(res.totalPrice);
     }
   };
 
@@ -46,18 +47,42 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
     }
   };
 
+  const handleStatusChanged = (newStatus: OrderStatus) => {
+    let redirectPath: string = "";
+    if (newStatus === OrderStatus.Completed) {
+      redirectPath = `/review/${restaurant}`;
+    }
+    if (newStatus === OrderStatus.Cancelled) {
+      redirectPath = "/";
+    }
+    setOrderStatus(newStatus);
+    if (redirectPath !== "") {
+      setTimeout(() => {
+        router.push(redirectPath);
+      }, 2000);
+    }
+  };
+
   useEffect(() => {
-    const getOrder = async () => {
-      if (orderId) {
-        const res = await orderService.getOrder(orderId);
-        setOrderStatus(res.status);
-        setTotalOrder(res.orderItems.length);
-        setPrice(res.totalPrice);
-        setRestaurant(res.restaurantId);
-      }
+    fetchOrder();
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+      query: { token: session?.user.token },
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected to the server");
+
+      socket.on("orderUpdated", (order: IOrder) => {
+        if (order._id === orderId && order.status) {
+          handleStatusChanged(order.status);
+        }
+      });
+    });
+
+    return () => {
+      socket.disconnect();
     };
-    getOrder();
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     if (
@@ -66,24 +91,6 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
     )
       setImg(imgUrl.preparing);
   }, [orderStatus]);
-
-  useEffect(() => {
-    //fetch order details
-    var index = 0;
-    //test sample
-    // const state = [
-    //   OrderStatus.Pending,
-    //   OrderStatus.Preparing,
-    //   OrderStatus.Completed,
-    // ];
-    // const interval = setInterval(() => {
-    //   if (index == 2) router.push(`/review/${restaurant}`);
-    //   setOrderStatus(state[index]);
-    //   index += 1;
-    // }, 3000);
-    const interval = setInterval(getMyorder, 3000);
-    return () => clearInterval(interval);
-  }, [restaurant]);
 
   return (
     <main className="min-h-screen bg-primary p-8 flex justify-center items-center">
