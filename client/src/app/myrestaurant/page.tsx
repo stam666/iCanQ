@@ -8,8 +8,84 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import CookingPanel from "@/components/CookingPanel";
+import CompletePanel from "@/components/CompletePanel";
 import PendingPanel from "@/components/PendingPanel";
+import CookingPanel from "@/components/CookingPanel";
+
+// for test---------------------------------------------
+interface OrderItem {
+  itemId: string;
+  name: string;
+  price: number;
+  amount: number;
+  note: string;
+}
+
+interface Order {
+  orderId: string;
+  orderItems: OrderItem[];
+  status: string;
+  totalPrice: number;
+  createdAt: Date;
+}
+
+const getorderItems = async (): Promise<Order[]> => {
+  return [
+    {
+      orderId: "654bc6948da1d2dc4037522e",
+      orderItems: [
+        {
+          itemId: "654bc6948da1d2dc4037522e",
+          name: "ข้าวมันไก่",
+          price: 50,
+          amount: 1,
+          note: "aaaaaaaaaaaa",
+        },
+        {
+          itemId: "654bc6948da1d2dc40375228",
+          name: "ข้าวไก่ฝืด",
+          price: 40,
+          amount: 1,
+          note: "a148464546",
+        },
+      ],
+      status: "complete",
+      totalPrice: 90,
+      createdAt: new Date("2023-01-01T12:00:00Z"), // Replace with actual creation date
+    },
+    {
+      orderId: "654bc6948da1d2dc40375228",
+      orderItems: [
+        {
+          itemId: "654bc6958da1d2dc4037522e",
+          name: "ข้าวมันไก่",
+          price: 50,
+          amount: 1,
+          note: "",
+        },
+      ],
+      status: "pending",
+      totalPrice: 1190,
+      createdAt: new Date("2023-01-02T15:30:00Z"), // Replace with actual creation date
+    },
+    {
+      orderId: "654bc6948da1d2dc40111128",
+      orderItems: [
+        {
+          itemId: "654bc6958da1d2dc4037521e",
+          name: "ข้าวมันไก่",
+          price: 50,
+          amount: 1,
+          note: "",
+        },
+      ],
+      status: "complete",
+      totalPrice: 1190,
+      createdAt: new Date("2023-01-02T15:30:00Z"), // Replace with actual creation date
+    },
+  ];
+};
+// for test---------------------------------------------
 
 export default function MyRestaurantPage() {
   const { data: session } = useSession();
@@ -34,6 +110,17 @@ export default function MyRestaurantPage() {
     getMyRestaurant();
   }, [session]);
 
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const orderItems = await getorderItems();
+      setOrders(orderItems);
+    };
+
+    fetchData();
+  }, []);
+
   const handleSetStatus = () => {
     if (restaurant && isOpen != undefined)
       restaurantService.setMyRestaurantStatus(restaurant?._id, !isOpen);
@@ -41,7 +128,7 @@ export default function MyRestaurantPage() {
   };
 
   return (
-    <main className="h-screen bg-gradient-to-tr from-brown-light-active via-white to-brown-light-active p-8 space-y-4">
+    <main className="min-h-screen bg-gradient-to-tr from-brown-light-active via-white to-brown-light-active p-8 space-y-4">
       <div className="flex flex-row justify-between">
         <div className="space-y-2">
           <p className="text-xl font-medium">
@@ -132,8 +219,17 @@ export default function MyRestaurantPage() {
               </div>
             </Button>
           </div>
-          {selectedSection === "pending" && <PendingPanel />}
-          {selectedSection === "cooking" && <CookingPanel />}
+          {selectedSection === "pending" && (
+            <PendingPanel
+              orders={orders.filter((order) => order.status === "pending")}
+            />
+          )}
+          {selectedSection === "cooking" && <CookingPanel  orders={orders.filter((order) => order.status === "cooking")}/>}
+          {selectedSection === "complete" && (
+            <CompletePanel
+              orders={orders.filter((order) => order.status === "complete")}
+            />
+          )}
         </>
       )}
     </main>

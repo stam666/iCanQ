@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 interface OrderItem {
   itemId: string;
   name: string;
@@ -6,6 +5,7 @@ interface OrderItem {
   amount: number;
   note: string;
 }
+
 interface Order {
   orderId: string;
   orderItems: OrderItem[];
@@ -13,40 +13,45 @@ interface Order {
   totalPrice: number;
   createdAt: Date;
 }
-interface CookingPanelProps {
+interface CompletePanelProps {
   orders?: Order[];
 }
-const CookingPanel: React.FC<CookingPanelProps> = ({ orders = [] }) => {
+const CompletePanel: React.FC<CompletePanelProps> = ({ orders = []  }) => {
   return (
     <div className="w-full space-y-6">
       {orders.map((order) => (
         <div key={order.orderId} className="text-white-dark-active">
-          <div className="flex flex-row justify-between rounded-2xl bg-white shadow-lg w-full">
+          <div className="flex flex-row rounded-2xl bg-white shadow-lg w-full justify-between">
             <div className="flex flex-col p-4 space-y-4">
               <div className="break-all">Order: {order.orderId}</div>
               {order.orderItems.map((item) => (
                 <div key={item.itemId} className="flex flex-col">
                   <div className="flex flex-row space-x-4">
-                    <div className="text-left text-primary">x{item.amount}</div>
-                    <div className="text-left">{item.name}</div>
+                    <div className="text-primary">x{item.amount}</div>
+                    <div>{item.name}</div>
                   </div>
                   {item.note !== "" ? (
-                    <div className="text-left text-white-normal-active">
-                      {item.note}
-                    </div>
+                    <div className="text-white-normal-active">{item.note}</div>
                   ) : null}
                 </div>
               ))}
             </div>
 
-            <Button className="bg-primary p-8 text-white justify-center items-center text-center rounded-tr-2xl rounded-br-2xl flex flex-col space-y-2 hover:bg-brown-dark-hover transition-all duration-30">
-              <div>Complete</div>
-              <p className="text-2xl">{order.totalPrice}฿</p>
-            </Button>
+            {/* Right Section */}
+            <div className="flex flex-col items-end p-4 text-sm justify-between space-y-4">
+              <div className="text-end">
+                <div className="text-xl">{order.totalPrice}฿</div>
+                <div>{order.createdAt.toLocaleDateString()}</div>
+                <div style={{ whiteSpace: "nowrap" }}>
+                  {order.createdAt.toLocaleTimeString()}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       ))}
     </div>
   );
 };
-export default CookingPanel;
+
+export default CompletePanel;
