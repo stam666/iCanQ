@@ -1,31 +1,16 @@
 import { Button } from "@mui/material";
-interface OrderItem {
-  itemId: string;
-  name: string;
-  price: number;
-  amount: number;
-  note: string;
-}
-interface Order {
-  orderId: string;
-  orderItems: OrderItem[];
-  status: string;
-  totalPrice: number;
-  createdAt: Date;
-}
-interface CookingPanelProps {
-  orders?: Order[];
-}
-const CookingPanel: React.FC<CookingPanelProps> = ({ orders = [] }) => {
+import { IOrder } from "@/models/order.model";
+
+const CookingPanel: React.FC<{ orders: IOrder[] }> = ({ orders }) => {
   return (
     <div className="w-full space-y-6">
       {orders.map((order) => (
-        <div key={order.orderId} className="text-white-dark-active">
+        <div key={order._id} className="text-white-dark-active">
           <div className="flex flex-row justify-between rounded-2xl bg-white shadow-lg w-full">
             <div className="flex flex-col p-4 space-y-4">
-              <div className="break-all">Order: {order.orderId}</div>
-              {order.orderItems.map((item) => (
-                <div key={item.itemId} className="flex flex-col">
+              <div className="break-all">Order: {order._id}</div>
+              {order.orderItems?.map((item) => (
+                <div key={item.menuId} className="flex flex-col">
                   <div className="flex flex-row space-x-4">
                     <div className="text-left text-primary">x{item.amount}</div>
                     <div className="text-left">{item.name}</div>
