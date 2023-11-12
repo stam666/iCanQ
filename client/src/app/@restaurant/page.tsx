@@ -12,26 +12,30 @@ export default function MyRestaurantPage() {
   const [restaurant, setRestaurant] = useState<IRestaurant>();
   const [isOpen, setIsOpen] = useState<boolean>();
   const router = useRouter();
-  useEffect(() => {
-    const getMyRestaurant = async () => {
-      if (session) {
-        try {
-          const restaurantData: IRestaurant =
-            await restaurantService.getMyRestaurant(session.user._id);
-          setRestaurant(restaurantData);
-          setIsOpen(restaurantData.openStatus);
-        } catch (error) {
-          console.error("Error fetching restaurant data:", error);
-        }
+
+  const getMyRestaurant = async () => {
+    if (session) {
+      try {
+        const restaurantData: IRestaurant =
+          await restaurantService.getMyRestaurant(session.user._id);
+        setRestaurant(restaurantData);
+        setIsOpen(restaurantData.openStatus);
+      } catch (error) {
+        console.error("Error fetching restaurant data:", error);
       }
-    };
-    getMyRestaurant();
-  }, [session]);
+    }
+  };
+
   const handleSetStatus = () => {
     if (restaurant && isOpen != undefined)
       restaurantService.setMyRestaurantStatus(restaurant?._id, !isOpen);
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    getMyRestaurant();
+  }, [session]);
+
   return (
     <main className="h-screen bg-gradient-to-tr from-brown-light-active via-white to-brown-light-active p-8 space-y-4">
       <div className="flex flex-row justify-between">
