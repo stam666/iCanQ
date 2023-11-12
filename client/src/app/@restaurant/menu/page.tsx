@@ -1,6 +1,6 @@
 "use client";
-import ReviewCard from "@/components/ReviewCard";
 import InputText from "@/components/inputText";
+import ReviewCard from "@/components/ReviewCard";
 import MenuService from "@/libs/menuService";
 import menuService from "@/libs/menuService";
 import restaurantService from "@/libs/restaurantService";
@@ -12,8 +12,6 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import StarIcon from "@mui/icons-material/Star";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -47,7 +45,7 @@ export default function MyMenuPage() {
       try {
         if (restaurant) {
           const menu = await restaurantService.getRestaurantMenu(
-            restaurant?._id
+            restaurant?._id,
           );
           setRestaurantMenu(menu);
         }
@@ -65,7 +63,7 @@ export default function MyMenuPage() {
       try {
         if (restaurant) {
           const review = await reviewService.getReviewRestaurant(
-            restaurant?._id
+            restaurant?._id,
           );
           setReview(review.data);
         }
@@ -88,7 +86,7 @@ export default function MyMenuPage() {
       const res = await menuService.createMenu(
         restaurant._id,
         menuName,
-        menuPrice
+        menuPrice,
       );
       setIsMenuCreated(res.success);
     }
@@ -106,7 +104,7 @@ export default function MyMenuPage() {
         <div className="h-[25vh] w-full -m-8 z-0 bg-primary absolute"></div>
         <div className="relative z-10">
           <div className="flex flex-row justify-between pt-[60px] text-white">
-            <Link href="/myrestaurant" className="">
+            <Link href="/" className="">
               <ArrowBackIosNewIcon />
             </Link>
             <div className="text-2xl font-medium text-center">
