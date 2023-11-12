@@ -44,7 +44,7 @@ export default function ReviewCard({
           <Link
             href={
               isRestaurant
-                ? "/myrestaurant/review"
+                ? "/review"
                 : `/restaurants/${rid}/review?name=${nameRestaurant}`
             }
           >
