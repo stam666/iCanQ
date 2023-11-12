@@ -1,14 +1,12 @@
 import amqp, { ConsumeMessage } from "amqplib";
 import { IOrder, Queue } from "../resources/interfaces/order.type";
 
-
 const MQ_HOST = process.env.MQ_HOST || "localhost";
 const MQ_URL = `amqp://${MQ_HOST}:5672`;
 const MQ_URI = process.env.MQ_URI || "amqp://localhost:5672";
 const EXCHANGE = "order";
 
 let orderChannel = null;
-
 
 const amqpConnect = async () => {
   try {
@@ -23,7 +21,11 @@ const amqpConnect = async () => {
 };
 
 const publishOrder = async (order: IOrder, queue: Queue) => {
-  await orderChannel.publish(EXCHANGE, queue, Buffer.from(JSON.stringify(order)));
+  await orderChannel.publish(
+    EXCHANGE,
+    queue,
+    Buffer.from(JSON.stringify(order))
+  );
   console.log(`AMQP - order: ${order} published to ${EXCHANGE} - ${queue}`);
 };
 
