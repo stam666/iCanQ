@@ -59,7 +59,7 @@ export default function RestaurantDetailPage({
   const [isSummary, setIsSummary] = useState(false);
   if (!isSummary)
     return (
-      <main className="min-h-screen bg-white p-8">
+      <main className="min-h-screen bg-white p-8 pb-40">
         <div className="h-1/4 w-full -m-8 z-0 bg-primary absolute"></div>
         <div className="relative z-10">
           <div className="flex flex-row justify-between pt-[60px] text-white">
@@ -108,7 +108,7 @@ export default function RestaurantDetailPage({
           <div className="text-2xl font-medium text-center">Summary</div>
           <div></div>
         </div>
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-6 pb-40">
           {cart.map((order: IOrderItem, index: number) => (
             <div key={index}>
               <div className="flex flex-row rounded-2xl bg-white shadow-lg w-full">
