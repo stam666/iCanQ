@@ -49,7 +49,9 @@ export default function MyRestaurantPage() {
         console.error("Error fetching orders:", error);
       }
     };
-    fetchData();
+    const interval = setInterval(fetchData, 3000);
+    return () => clearInterval(interval);
+    //fetchData();
   }, []);
 
   const handleSetStatus = () => {

@@ -71,17 +71,17 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
     //fetch order details
     var index = 0;
     //test sample
-    const state = [
-      OrderStatus.Pending,
-      OrderStatus.Preparing,
-      OrderStatus.Completed,
-    ];
-    const interval = setInterval(() => {
-      if (index == 2) router.push(`/review/${restaurant}`);
-      setOrderStatus(state[index]);
-      index += 1;
-    }, 3000);
-    // const interval = setInterval(getMyorder, 3000);
+    // const state = [
+    //   OrderStatus.Pending,
+    //   OrderStatus.Preparing,
+    //   OrderStatus.Completed,
+    // ];
+    // const interval = setInterval(() => {
+    //   if (index == 2) router.push(`/review/${restaurant}`);
+    //   setOrderStatus(state[index]);
+    //   index += 1;
+    // }, 3000);
+    const interval = setInterval(getMyorder, 3000);
     return () => clearInterval(interval);
   }, [restaurant]);
 
