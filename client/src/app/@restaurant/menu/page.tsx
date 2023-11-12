@@ -1,16 +1,17 @@
 "use client";
 import InputText from "@/components/inputText";
+import ReviewCard from "@/components/ReviewCard";
 import MenuService from "@/libs/menuService";
 import menuService from "@/libs/menuService";
 import restaurantService from "@/libs/restaurantService";
+import reviewService from "@/libs/reviewService";
 import { IMenu } from "@/models/menu.model";
 import { IRestaurant } from "@/models/restaurant.model";
+import { IReview } from "@/models/review.model";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import StarIcon from "@mui/icons-material/Star";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -23,6 +24,8 @@ export default function MyMenuPage() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [restaurantMenu, setRestaurantMenu] = useState<IMenu[]>([]);
   const [isMenuCreated, setIsMenuCreated] = useState<boolean>(false);
+  const [review, setReview] = useState<IReview[]>([]);
+
   useEffect(() => {
     const getMyRestaurant = async () => {
       if (session) {
@@ -55,6 +58,21 @@ export default function MyMenuPage() {
     // Call the async function immediately
     fetchRestaurantMenu();
   }, [restaurant, isMenuCreated]);
+  useEffect(() => {
+    const fetchReview = async () => {
+      try {
+        if (restaurant) {
+          const review = await reviewService.getReviewRestaurant(
+            restaurant?._id,
+          );
+          setReview(review.data);
+        }
+      } catch (error) {
+        console.error("Error fetching restaurant review: ", error);
+      }
+    };
+    fetchReview();
+  }, [restaurant]);
   const closeSheet = () => {
     setIsSheetOpen(false);
     setMenuPrice(0);
@@ -86,7 +104,7 @@ export default function MyMenuPage() {
         <div className="h-[25vh] w-full -m-8 z-0 bg-primary absolute"></div>
         <div className="relative z-10">
           <div className="flex flex-row justify-between pt-[60px] text-white">
-            <Link href="/myrestaurant" className="">
+            <Link href="/" className="">
               <ArrowBackIosNewIcon />
             </Link>
             <div className="text-2xl font-medium text-center">
@@ -94,20 +112,14 @@ export default function MyMenuPage() {
             </div>
             <div></div>
           </div>
-          <div className="bg-white rounded-2xl flex flex-col p-4 shadow-lg space-y-4 mt-8">
-            <div className="bg-brown-light p-2 rounded-lg">
-              Caption is still a caption Caption is still a captionCaption is
-              still a caption Caption is still a caption
-            </div>
-            <div className="flex flex-row justify-between">
-              <div className="flex flex-row space-x-1">
-                <StarIcon className="text-yellow" />
-                <p className="text-white-normal-active">4.5</p>
-                <p className="text-white-dark ">Rating and reviews</p>
-              </div>
-              <KeyboardArrowRightIcon className="text-white-normal-active" />
-            </div>
-          </div>
+          <ReviewCard
+            caption={review[0]?.reviewText || "ยังไม่ได้รับการรีวิว"}
+            reviewId={review[0]?._id}
+            uid={review[0]?.userId}
+            star={review[0]?.rating.toString() || "-"}
+            isRestaurant={true}
+          />
+
           <div className="flex flex-row justify-between items-center mt-8">
             <div className="text-2xl font-medium text-center ">Menu</div>
             <div

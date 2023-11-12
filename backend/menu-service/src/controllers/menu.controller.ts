@@ -18,11 +18,11 @@ console.log("Connected to MongoDB on " + mongoUrl);
 async function addMenuToRestaurant(
   isCreate: boolean,
   restaurantId: string,
-  menuId: string,
+  menuId: string
 ) {
   try {
     await axios.post(
-      `http://localhost:${process.env.PORT}/restaurants/updateMenu`,
+      `${process.env.GATEWAY_URI}/restaurants/updateMenu`,
       // await axios.post(
       //   `http://localhost:8002/createMenu`,
       {
@@ -33,7 +33,7 @@ async function addMenuToRestaurant(
           isCreate: isCreate,
           restaurantId: restaurantId,
         },
-      },
+      }
     );
     return true;
   } catch (err) {
@@ -75,14 +75,14 @@ const createMenu: RequestHandler = async (req, res) => {
     const isCreate = true;
     const createdMenu = await conn.execute(
       "INSERT INTO menus (name, price) VALUES (?, ?)",
-      [name, price],
+      [name, price]
     );
     const menuId = createdMenu.insertId;
 
     const isAddSuccess = await addMenuToRestaurant(
       isCreate,
       restaurantId,
-      menuId,
+      menuId
     );
     if (!isAddSuccess) {
       return res
@@ -102,7 +102,7 @@ const updateMenu: RequestHandler = async (req, res) => {
     const { price } = req.body;
     const result = await conn.execute(
       "UPDATE menus SET price = ? WHERE id = ?",
-      [price, id],
+      [price, id]
     );
     if (result.rowsAffected == 0) {
       return res
@@ -130,7 +130,7 @@ const deleteMenu: RequestHandler = async (req, res) => {
     const isDeleteSuccess = await addMenuToRestaurant(
       isCreate,
       restaurantId,
-      id,
+      id
     );
 
     if (!isDeleteSuccess) {

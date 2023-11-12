@@ -10,7 +10,7 @@ async function getUserId(req: any) {
   };
 
   const response = await axios.get(
-    `http://localhost:${process.env.PORT}/users/auth/me`,
+    `${process.env.GATEWAY_URI}/users/auth/me`,
     config,
   );
   const userId = response.data.data._id;
@@ -199,7 +199,7 @@ const setRestaurantStatus: RequestHandler = async (req, res) => {
 const fetchMenuData = async (menuId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:${process.env.PORT}/menu/${menuId}`,
+      `${process.env.GATEWAY_URI}/menu/${menuId}`,
     );
 
     if (response.status === 400) {

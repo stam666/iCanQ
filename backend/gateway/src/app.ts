@@ -1,6 +1,6 @@
 import express from "express";
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 
 import cors from "cors";
@@ -26,12 +26,18 @@ const startGateway = async () => {
 
   await MqService.amqpConnect();
   SocketsService.configureSocket(httpServer);
-  MqService.assertAndConsumeQueue(Queue.CREATE, SocketsService.triggerOrderCreatedToRestaurant);
-  MqService.assertAndConsumeQueue(Queue.UPDATE, SocketsService.triggerOrderUpdatedToCustomer);
+  MqService.assertAndConsumeQueue(
+    Queue.CREATE,
+    SocketsService.triggerOrderCreatedToRestaurant
+  );
+  MqService.assertAndConsumeQueue(
+    Queue.UPDATE,
+    SocketsService.triggerOrderUpdatedToCustomer
+  );
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CLIENT_URI,
       credentials: true,
     })
   );
@@ -98,7 +104,7 @@ const startGateway = async () => {
 
   const PORT = process.env.PORT || 8000;
   httpServer.listen(PORT, () => {
-    console.log(`⚡️[server]: Gateway is running at https://localhost:${PORT}`);
+    console.log(`⚡️[server]: Gateway is running at ${process.env.GATEWAY_URI}`);
   });
 };
 

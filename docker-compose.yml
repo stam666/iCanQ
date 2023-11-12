@@ -7,8 +7,58 @@ services:
     image: icanq/gateway:1.0.0
     depends_on:
       - rabbitmq
+      - order-service
     ports:
       - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - MQ_URI=amqp://rabbitmq:5672
+
+  order-service:
+    restart: always
+    build: ./backend/order-service
+    image: icanq/order-service:1.0.0
+    depends_on:
+      - rabbitmq
+    ports:
+      - "30043:30043"
+    env_file:
+      - .env
+    environment:
+      - MQ_URI=amqp://rabbitmq:5672
+
+  user-service:
+    build: ./backend/user-service
+    image: icanq/user-service:1.0.0
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+  
+  restaurant-service:
+    build: ./backend/restaurant-service
+    image: icanq/restaurant-service:1.0.0
+    ports:
+      - "8002:8002"
+    env_file:
+      - .env
+
+  menu-service:
+    build: ./backend/menu-service
+    image: icanq/menu-service:1.0.0
+    ports:
+      - "8003:8003"
+    env_file:
+      - .env
+  
+  review-service:
+    build: ./backend/review-service
+    image: icanq/review-service:1.0.0
+    ports:
+      - "8004:8004"
+    env_file:
+      - .env
 
   rabbitmq:
     image: rabbitmq:3-management

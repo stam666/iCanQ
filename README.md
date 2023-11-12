@@ -15,6 +15,7 @@
   yarn restaurants:dev
   yarn menus:dev
   yarn orders:dev
+  yarn reviews:dev
   ```
 - Run command for prod
   ```
@@ -25,6 +26,7 @@
   yarn restaurants
   yarn menus
   yarn orders
+  yarn reviews
   ```
 
 ## Run client in /client

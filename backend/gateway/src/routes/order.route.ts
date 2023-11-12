@@ -6,6 +6,7 @@ const router = Router();
 
 //customer routes
 router.get("/", OrderController.getAllOrder);
+router.get("/:orderId", OrderController.getOrder);
 router.get("/myorders", AuthMiddleware.protect, OrderController.getMyOrders);
 router.post("/", AuthMiddleware.protect, OrderController.placeOrder);
 router.patch("/cancel/:orderId", AuthMiddleware.protect, OrderController.cancelOrder);

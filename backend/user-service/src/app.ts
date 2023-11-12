@@ -1,6 +1,6 @@
 import express from "express";
 require("dotenv").config({
-  path: "./config.env",
+  path: "../config.env",
 });
 import mongoose from "mongoose";
 import cors from "cors";
@@ -9,7 +9,7 @@ import { UserRouter } from "./routes/user.route";
 const app = express();
 app.use(
   cors({
-    origin: "http://127.0.0.1:8000",
+    origin: "*",
     credentials: true,
   })
 );
@@ -25,6 +25,6 @@ app.use("/", UserRouter);
 
 app.listen(PORT, () => {
   console.log(
-    `⚡️[server]: User service is running at https://localhost:${PORT}`
+    `⚡️[server]: User service is running at ${process.env.USER_SERVICE_URI}`
   );
 });
