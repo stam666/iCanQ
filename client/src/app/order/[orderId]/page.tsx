@@ -31,7 +31,7 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
   const [restaurant, setRestaurant] = useState<string>("");
   const getMyorder = async () => {
     if (orderId) {
-      const res = await orderService.getOrder(orderId);
+      const res= await orderService.getOrder(orderId);
       if (res.status === OrderStatus.Completed) {
         router.push(`/review/${restaurant}`);
       }
