@@ -1,7 +1,13 @@
 import { Button } from "@mui/material";
-import { IOrder } from "@/models/order.model";
+import { IOrder, OrderStatus } from "@/models/order.model";
+import { orderService } from "@/libs/orderService";
 
 const CookingPanel: React.FC<{ orders: IOrder[] }> = ({ orders }) => {
+  const handleCompleteOrder = (orderId: string) => {
+    orderService.updateOrder(orderId, OrderStatus.Completed);
+    console.log(`Complete order with ID: ${orderId}`);
+  };
+
   return (
     <div className="w-full space-y-6">
       {orders.map((order) => (
@@ -24,7 +30,10 @@ const CookingPanel: React.FC<{ orders: IOrder[] }> = ({ orders }) => {
               ))}
             </div>
 
-            <Button className="bg-primary p-8 text-white justify-center items-center text-center rounded-tr-2xl rounded-br-2xl flex flex-col space-y-2 hover:bg-brown-dark-hover transition-all duration-30">
+            <Button
+              className="bg-primary p-8 text-white justify-center items-center text-center rounded-tr-2xl rounded-br-2xl flex flex-col space-y-2 hover:bg-brown-dark-hover transition-all duration-30"
+              onClick={() => order._id && handleCompleteOrder(order._id)}
+            >
               <div>Complete</div>
               <p className="text-2xl">{order.totalPrice}฿</p>
             </Button>

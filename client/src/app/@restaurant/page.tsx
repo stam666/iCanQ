@@ -13,6 +13,7 @@ import CompletePanel from "@/components/CompletePanel";
 import PendingPanel from "@/components/PendingPanel";
 import CookingPanel from "@/components/CookingPanel";
 import { IOrder } from "@/models/order.model";
+import { io } from "socket.io-client";
 
 // Import statements
 
@@ -24,41 +25,62 @@ export default function MyRestaurantPage() {
   const [selectedSection, setSelectedSection] = useState<string>("pending");
   const router = useRouter();
 
-  useEffect(() => {
-    const getMyRestaurant = async () => {
-      if (session) {
-        try {
-          const restaurantData: IRestaurant =
-            await restaurantService.getMyRestaurant(session.user._id);
-          setRestaurant(restaurantData);
-          setIsOpen(restaurantData.openStatus);
-        } catch (error) {
-          console.error("Error fetching restaurant data:", error);
-        }
-      }
-    };
-    getMyRestaurant();
-  }, [session]);
-
-  useEffect(() => {
-    const fetchData = async () => {
+  const getMyRestaurant = async () => {
+    if (session) {
       try {
-        const orderItems: IOrder[] = await orderService.restaurantGetAllOrder();
-        setOrders(orderItems);
+        const restaurantData: IRestaurant =
+          await restaurantService.getMyRestaurant(session.user._id);
+        setRestaurant(restaurantData);
+        setIsOpen(restaurantData.openStatus);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.error("Error fetching restaurant data:", error);
       }
-    };
-    const interval = setInterval(fetchData, 3000);
-    return () => clearInterval(interval);
-    //fetchData();
-  }, []);
+    }
+  };
 
-  const handleSetStatus = () => {
+  const fetchOrders = async () => {
+    try {
+      const orderItems: IOrder[] = await orderService.restaurantGetAllOrder();
+      setOrders(orderItems);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
+  const handleRestaurantSetStatus = () => {
     if (restaurant && isOpen != undefined)
       restaurantService.setMyRestaurantStatus(restaurant?._id, !isOpen);
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    getMyRestaurant();
+    fetchOrders();
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+      query: { token: session?.user.token },
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected to the server");
+
+      socket.on("orderCreated", (order: IOrder) => {
+        setOrders((prevOrders) => [...prevOrders, order]);
+      });
+
+      socket.on("orderUpdated", (order: IOrder) => {
+        setOrders((prevOrders) => {
+          const index = prevOrders.findIndex((o) => o._id === order._id);
+          const newOrders = [...prevOrders];
+          newOrders[index] = order;
+          return newOrders;
+        });
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [session]);
 
   return (
     <main className="min-h-screen bg-gradient-to-tr from-brown-light-active via-white to-brown-light-active p-8 space-y-4">
@@ -100,7 +122,7 @@ export default function MyRestaurantPage() {
               <input
                 type="checkbox"
                 checked={isOpen}
-                onChange={handleSetStatus}
+                onChange={handleRestaurantSetStatus}
                 className="sr-only peer"
               />
               {/* Checkbox Styling */}

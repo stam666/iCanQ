@@ -1,14 +1,15 @@
 import { CheckCircleOutline, Cancel } from "@mui/icons-material";
-import { IOrder } from "@/models/order.model";
+import { IOrder, OrderStatus } from "@/models/order.model";
+import { orderService } from "@/libs/orderService";
 
 const PendingPanel: React.FC<{ orders: IOrder[] }> = ({ orders }) => {
   const handleAcceptOrder = (orderId: string) => {
-    // Add logic for accepting the order
+    orderService.updateOrder(orderId, OrderStatus.Preparing);
     console.log(`Accepted order with ID: ${orderId}`);
   };
 
   const handleRejectOrder = (orderId: string) => {
-    // Add logic for rejecting the order
+    orderService.updateOrder(orderId, OrderStatus.Cancelled);
     console.log(`Rejected order with ID: ${orderId}`);
   };
 

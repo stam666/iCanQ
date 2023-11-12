@@ -1,4 +1,4 @@
-import { IOrder, IOrderItem, OrderStatus } from "@/models/order.model";
+import { IOrder, IOrderItem, IOrderList, OrderStatus } from "@/models/order.model";
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
@@ -55,7 +55,7 @@ const updateOrder = async (orderId: string, status: OrderStatus) => {
   if (!session) {
     throw new Error("Unauthorized");
   }
-  const res = await axios.put(
+  const res = await axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/order/restaurant/status/${orderId}`,
     {
       status,
@@ -89,7 +89,8 @@ const restaurantGetAllOrder = async () => {
   if (!res) {
     throw new Error("Failed to get all restaurant order");
   }
-  return await res.data;
+  
+  return await res.data.orders;
 };
 
 const cancelOrder = async (orderId: string) => {
