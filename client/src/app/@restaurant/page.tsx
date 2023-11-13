@@ -53,6 +53,8 @@ export default function MyRestaurantPage() {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {}, [selectedSection]);
+
   useEffect(() => {
     getMyRestaurant();
     fetchOrders();
@@ -152,7 +154,7 @@ export default function MyRestaurantPage() {
           </Button>
           <Button
             className="flex-grow"
-            onClick={() => setSelectedSection("preparing")}
+            onClick={() => setSelectedSection("cooking")}
           >
             <div
               className={`flex-grow font-medium border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center hover:bg-primary hover:text-white transition-all duration-200 ${

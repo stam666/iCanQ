@@ -27,7 +27,7 @@ export default function RestaurantDetailPage({
   const [review, setReview] = useState<IReview[]>([]);
   const totalSum = cart.reduce(
     (sum, item) => sum + item.price * item.amount,
-    0,
+    0
   );
   const [restaurantMenu, setRestaurantMenu] = useState<IMenu[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<IMenu | null>(null);
@@ -69,7 +69,7 @@ export default function RestaurantDetailPage({
     try {
       const res = await orderService.placeOrder(params.rid, cart);
       console.log(res);
-      router.push("/order/" + res._id);
+      router.push("/order/" + params.rid + "/" + res._id);
     } catch (err) {
       console.log(err);
     }

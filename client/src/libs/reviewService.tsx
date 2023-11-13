@@ -23,6 +23,7 @@ async function createReview(
     { userId, restaurantId, reviewText, rating },
     {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${session.user.token}`,
       },
     }
