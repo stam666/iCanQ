@@ -2,6 +2,7 @@ const {
   Given,
   When,
   Then,
+  And,
   setWorldConstructor,
 } = require("@cucumber/cucumber");
 const assert = require("assert").strict;
@@ -83,3 +84,25 @@ When(
 Then("I should see order status {string}", async function (status) {
   assert.equal(this.context["response"].data.status, status);
 });
+
+When(
+  "I change the status of the incoming order to {string}",
+  async function (status) {
+    const orderId = this.context["response"].data._id;
+
+    const response = await axios.patch(
+      `http://localhost:8000/order/restaurant/status/${orderId}`,
+      {
+        status: status,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.context["authResponse"].data.token}`,
+        },
+      }
+    );
+    console.log("response");
+    this.context["response"] = response;
+  }
+);

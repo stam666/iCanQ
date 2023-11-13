@@ -19,7 +19,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3720454
+              "duration": 1577868
             }
           },
           {
@@ -32,7 +32,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2434132312
+              "duration": 288734223
             }
           },
           {
@@ -45,7 +45,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 221555
+              "duration": 207468
             }
           }
         ],
@@ -77,20 +77,20 @@
         "description": "",
         "id": "order-service;view-all-resaturants",
         "keyword": "Scenario",
-        "line": 3,
+        "line": 9,
         "name": "View all resaturants",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
             "line": 4,
-            "name": "I logged in as a customer",
+            "name": "I logged in as a 'customer'",
             "match": {
-              "location": "src/steps/order.js:14"
+              "location": "src/steps/order.js:16"
             },
             "result": {
               "status": "passed",
-              "duration": 873631003
+              "duration": 176085744
             }
           },
           {
@@ -99,11 +99,11 @@
             "line": 5,
             "name": "I get all restaurants",
             "match": {
-              "location": "src/steps/order.js:29"
+              "location": "src/steps/order.js:33"
             },
             "result": {
               "status": "passed",
-              "duration": 76286467
+              "duration": 106127902
             }
           },
           {
@@ -112,11 +112,11 @@
             "line": 6,
             "name": "I should see all restaurants",
             "match": {
-              "location": "src/steps/order.js:35"
+              "location": "src/steps/order.js:39"
             },
             "result": {
               "status": "passed",
-              "duration": 237691
+              "duration": 248237
             }
           }
         ],
@@ -132,46 +132,46 @@
         "description": "",
         "id": "order-service;view-all-menus-of-selected-restaurant",
         "keyword": "Scenario Outline",
-        "line": 14,
+        "line": 17,
         "name": "View all menus of selected restaurant",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 9,
-            "name": "I logged in as a customer",
+            "line": 12,
+            "name": "I logged in as a 'customer'",
             "match": {
-              "location": "src/steps/order.js:14"
+              "location": "src/steps/order.js:16"
             },
             "result": {
               "status": "passed",
-              "duration": 162357446
+              "duration": 181540233
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 10,
+            "line": 13,
             "name": "I get all menus of restaurant '6528e3f488f43121d4ac7c18'",
             "match": {
-              "location": "src/steps/order.js:39"
+              "location": "src/steps/order.js:43"
             },
             "result": {
               "status": "passed",
-              "duration": 304379552
+              "duration": 368003392
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 11,
+            "line": 14,
             "name": "I should see menuId : 10 of selected restaurant",
             "match": {
-              "location": "src/steps/order.js:44"
+              "location": "src/steps/order.js:48"
             },
             "result": {
               "status": "passed",
-              "duration": 229543
+              "duration": 228187
             }
           }
         ],
@@ -187,46 +187,179 @@
         "description": "",
         "id": "order-service;place-new-order",
         "keyword": "Scenario Outline",
-        "line": 22,
+        "line": 28,
         "name": "Place new order",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 17,
-            "name": "I logged in as a customer",
+            "line": 20,
+            "name": "I logged in as a \"customer\"",
             "match": {
-              "location": "src/steps/order.js:14"
+              "location": "src/steps/order.js:16"
             },
             "result": {
               "status": "passed",
-              "duration": 161065907
+              "duration": 169809427
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 18,
-            "name": "I place new order with '10' of restaurant '6528e3f488f43121d4ac7c18'",
+            "line": 21,
+            "name": "I place new order with '71' of restaurant '6548e6f006079d304444f5d6'",
             "match": {
-              "location": "src/steps/order.js:52"
+              "location": "src/steps/order.js:56"
             },
             "result": {
               "status": "passed",
-              "duration": 156410547
+              "duration": 203903341
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 19,
+            "line": 22,
             "name": "I should see order status 'pending'",
             "match": {
-              "location": "src/steps/order.js:82"
+              "location": "src/steps/order.js:84"
             },
             "result": {
               "status": "passed",
-              "duration": 357090
+              "duration": 317648
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 23,
+            "name": "I logged in as a 'restaurant'",
+            "match": {
+              "location": "src/steps/order.js:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 162964320
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "I change the status of the incoming order to 'cooking'",
+            "match": {
+              "location": "src/steps/order.js:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 306062815
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 25,
+            "name": "I should see order status 'cooking'",
+            "match": {
+              "location": "src/steps/order.js:84"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 186654
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@order-service",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "order-service;place-new-order",
+        "keyword": "Scenario Outline",
+        "line": 29,
+        "name": "Place new order",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 20,
+            "name": "I logged in as a \"customer\"",
+            "match": {
+              "location": "src/steps/order.js:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 154435719
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 21,
+            "name": "I place new order with '71' of restaurant '6548e6f006079d304444f5d6'",
+            "match": {
+              "location": "src/steps/order.js:56"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 168272911
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 22,
+            "name": "I should see order status 'pending'",
+            "match": {
+              "location": "src/steps/order.js:84"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 94351
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 23,
+            "name": "I logged in as a 'restaurant'",
+            "match": {
+              "location": "src/steps/order.js:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 155385944
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "I change the status of the incoming order to 'complete'",
+            "match": {
+              "location": "src/steps/order.js:88"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 289690205
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 25,
+            "name": "I should see order status 'complete'",
+            "match": {
+              "location": "src/steps/order.js:84"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 103569
             }
           }
         ],
