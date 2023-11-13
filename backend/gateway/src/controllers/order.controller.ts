@@ -15,7 +15,6 @@ import { RestaurantService } from "../services/restaurant.service";
 const getAllOrder = async (req: Request, res: Response) => {
   OrderClient.getAllOrder({}, (err: ServerErrorResponse, data: IOrderList) => {
     if (!err) {
-      console.log(data);
       res.status(200).json(data);
     } else {
       res.status(500).json({ message: "Error getting orders" });
@@ -77,7 +76,6 @@ const getRestaurantOrders = async (req: RestaurantRequest, res: Response) => {
     { restaurantId },
     (err: ServerErrorResponse, data: IOrderList) => {
       if (!err) {
-        console.log(data);
         res.status(200).json(data);
       } else {
         res.status(500).json({ message: "Error getting orders" });
@@ -88,14 +86,14 @@ const getRestaurantOrders = async (req: RestaurantRequest, res: Response) => {
 
 const cancelOrder = async (req: AuthenticatedRequest, res: Response) => {
   const { orderId } = req.params;
-  const userId = req.user._id;
+  const userId = req.user._id.toString();
 
   OrderClient.get({ orderId }, (err: ServerErrorResponse, order: IOrder) => {
     if (err) {
       return res.status(500).json({ message: "Error fetching order" });
     }
 
-    if (order.userId !== userId) {
+    if (order.userId.toString() !== userId) {
       return res
         .status(403)
         .json({ message: "Not authorized to cancel order" });

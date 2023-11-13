@@ -28,11 +28,11 @@ const startGateway = async () => {
   SocketsService.configureSocket(httpServer);
   MqService.assertAndConsumeQueue(
     Queue.CREATE,
-    SocketsService.triggerOrderCreatedToRestaurant
+    SocketsService.triggerOrderCreated
   );
   MqService.assertAndConsumeQueue(
     Queue.UPDATE,
-    SocketsService.triggerOrderUpdatedToCustomer
+    SocketsService.triggerOrderUpdated
   );
 
   app.use(
