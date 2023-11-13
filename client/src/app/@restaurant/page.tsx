@@ -107,7 +107,7 @@ export default function MyRestaurantPage() {
       {/* My Restaurant Button */}
       <button
         className="mt-4 p-4 font-medium text-white w-full bg-primary rounded-full flex flex-row justify-between hover:bg-brown-dark-hover transition-all duration-30"
-        onClick={() => router.push("myrestaurant/mymenu")}
+        onClick={() => router.push("/menu")}
       >
         <div>My Restaurant</div>
         <ArrowForwardIcon />

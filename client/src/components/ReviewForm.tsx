@@ -124,7 +124,7 @@ export default function ReviewForm({
         bg-[#3D79FE] text-white border rounded-md py-3`}
         onClick={handleRoute}
       >
-        {variant === "Create" ? "Got it!" : "Cancle"}
+        {variant === "Create" ? "Got it!" : "Cancel"}
       </button>
     </div>
   );
