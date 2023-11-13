@@ -21,6 +21,7 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
   const router = useRouter();
   const param = useParams();
   const orderId = param.orderId as string;
+  const restaurantId = param.rid as string;
   const [totalOrder, setTotalOrder] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
   const [orderStatus, setOrderStatus] = useState<OrderStatus>(
@@ -50,7 +51,7 @@ const OrderPage = ({ params }: { params: { orderId: string } }) => {
   const handleStatusChanged = (newStatus: OrderStatus) => {
     let redirectPath: string = "";
     if (newStatus === OrderStatus.Completed) {
-      redirectPath = `/review/${restaurant}`;
+      redirectPath = `/review/${restaurantId}`;
     }
     if (newStatus === OrderStatus.Cancelled) {
       redirectPath = "/";

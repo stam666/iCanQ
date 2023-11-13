@@ -53,6 +53,8 @@ export default function MyRestaurantPage() {
     setIsOpen(!isOpen);
   };
 
+  useEffect(() => {}, [selectedSection]);
+
   useEffect(() => {
     getMyRestaurant();
     fetchOrders();
@@ -107,7 +109,7 @@ export default function MyRestaurantPage() {
       {/* My Restaurant Button */}
       <button
         className="mt-4 p-4 font-medium text-white w-full bg-primary rounded-full flex flex-row justify-between hover:bg-brown-dark-hover transition-all duration-30"
-        onClick={() => router.push("myrestaurant/mymenu")}
+        onClick={() => router.push("/menu")}
       >
         <div>My Restaurant</div>
         <ArrowForwardIcon />
@@ -152,7 +154,7 @@ export default function MyRestaurantPage() {
           </Button>
           <Button
             className="flex-grow"
-            onClick={() => setSelectedSection("preparing")}
+            onClick={() => setSelectedSection("cooking")}
           >
             <div
               className={`flex-grow font-medium border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center hover:bg-primary hover:text-white transition-all duration-200 ${

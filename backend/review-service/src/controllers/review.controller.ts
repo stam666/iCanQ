@@ -27,15 +27,15 @@ const createRestaurantReview: RequestHandler = async (req, res) => {
     const { restaurantId } = req.params;
 
     // Check if a review already exists for the same user and restaurant
-    const existingReview = await Review.findOne({ restaurantId, userId });
+    // const existingReview = await Review.findOne({ restaurantId, userId });
 
-    if (existingReview) {
-      res.status(400).json({
-        success: false,
-        data: "You have already reviewed this restaurant.",
-      });
-      return;
-    }
+    // if (existingReview) {
+    //   res.status(400).json({
+    //     success: false,
+    //     data: "You have already reviewed this restaurant.",
+    //   });
+    //   return;
+    // }
 
     const newReview = await Review.create({
       userId,
