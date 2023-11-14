@@ -32,12 +32,18 @@ spec:
               value: http://order-service.default:8004
             - name: REVIEW_SERVICE_URI
               value: http://review-service.default:8005
+            - name: CLIENT_URI
+              value: http://localhost:3000
             - name: MQ_HOST
-              value: http://rabbitmq-service.default:5672
+              value: amqp://rabbitmq-service.default:5672
+            - name: MQ_URI
+              value: amqp://rabbitmq-service.default:5672
             - name: JWT_SECRET
               value: Ey7nTKnggBc0bRN8WUjyShw2qzOZ6KW4fUyqcKBePxY=
             - name: GRPC_HOST
               value: http://order-service.default:8004
+            - name: JWT_EXPIRE
+              value: "1d"
 
 ---
 apiVersion: v1

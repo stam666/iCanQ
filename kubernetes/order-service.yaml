@@ -28,6 +28,8 @@ spec:
               value: localhost
             - name: GRPC_PORT
               value: "30043"
+            - name: MQ_URI
+              value: amqp://rabbitmq-service:5672
 
 ---
 apiVersion: v1

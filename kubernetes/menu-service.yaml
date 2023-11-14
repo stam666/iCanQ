@@ -25,15 +25,9 @@ spec:
             - name: DATABASE_HOST
               value: aws.connect.psdb.cloud
             - name: DATABASE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: icanq-secret
-                  key: DATABASE_USERNAME
+              value: sbbjeilj78r1h0cgzku8
             - name: DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: icanq-secret
-                  key: DATABASE_PASSWORD
+              value: # password
 ---
 apiVersion: v1
 kind: Service
