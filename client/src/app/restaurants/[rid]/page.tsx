@@ -31,8 +31,9 @@ export default function RestaurantDetailPage({
   );
   const [restaurantMenu, setRestaurantMenu] = useState<IMenu[]>([]);
   const [selectedMenu, setSelectedMenu] = useState<IMenu | null>(null);
+  const [isSummary, setIsSummary] = useState(false);
+
   useEffect(() => {
-    // Define an async function to fetch restaurant menu
     const fetchRestaurantMenu = async () => {
       try {
         const menu = await restaurantService.getRestaurantMenu(params.rid);
@@ -43,21 +44,24 @@ export default function RestaurantDetailPage({
       }
     };
 
-    // Call the async function immediately
     fetchRestaurantMenu();
   }, [params.rid]);
-  const [amount, setAmount] = useState(0);
-  const [note, setNote] = useState("");
+  useEffect(() => {
+    const fetchReview = async () => {
+      try {
+        const review = await reviewService.getReviewRestaurant(params.rid);
+        setReview(review.data);
+      } catch (error) {
+        console.error("Error fetching restaurant review: ", error);
+      }
+    };
+    fetchReview();
+  }, []);
+
   const handleMenuCardClick = (menu: IMenu) => {
-    console.log(menu);
     setSelectedMenu(menu);
   };
 
-  const closeBottomSheet = () => {
-    setNote("");
-    setAmount(0);
-    setSelectedMenu(null);
-  };
   const handleAddToCart = (order: IOrderItem) => {
     setCart((prevState) => [...prevState, order]);
   };
@@ -75,19 +79,6 @@ export default function RestaurantDetailPage({
     }
   };
 
-  useEffect(() => {
-    const fetchReview = async () => {
-      try {
-        const review = await reviewService.getReviewRestaurant(params.rid);
-        setReview(review.data);
-      } catch (error) {
-        console.error("Error fetching restaurant review: ", error);
-      }
-    };
-    fetchReview();
-  }, []);
-
-  const [isSummary, setIsSummary] = useState(false);
   if (!isSummary)
     return (
       <main className="min-h-screen bg-white p-8 pb-40">
@@ -126,17 +117,11 @@ export default function RestaurantDetailPage({
             </div>
           ))}
         </div>
-        {selectedMenu && (
-          <MenuSheet
-            amount={amount}
-            note={note}
-            onSetAmount={setAmount}
-            onSetNote={setNote}
-            closeBottomSheet={closeBottomSheet}
-            selectedMenu={selectedMenu}
-            handleAddToCart={handleAddToCart}
-          />
-        )}
+        <MenuSheet
+          selectedMenu={selectedMenu}
+          setSelectedMenu={setSelectedMenu}
+          handleAddToCart={handleAddToCart}
+        />
         {cart.length != 0 && (
           <div className="fixed bottom-0 left-0 right-0 bg-white px-6 py-8 rounded-t-3xl space-y-4 shadow-[rgba(0,0,0,0.1)_0px_0px_10px_4px] z-10">
             <button
