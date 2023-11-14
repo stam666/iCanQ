@@ -154,14 +154,14 @@ export default function MyRestaurantPage() {
           </Button>
           <Button
             className="flex-grow"
-            onClick={() => setSelectedSection("cooking")}
+            onClick={() => setSelectedSection("preparing")}
           >
             <div
               className={`flex-grow font-medium border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center hover:bg-primary hover:text-white transition-all duration-200 ${
-                selectedSection === "cooking" ? "bg-primary text-white" : ""
+                selectedSection === "preparing" ? "bg-primary text-white" : ""
               }`}
             >
-              cooking
+              preparing
             </div>
           </Button>
           <Button
@@ -170,7 +170,7 @@ export default function MyRestaurantPage() {
           >
             <div
               className={`flex-grow font-medium border-2 border-primary rounded-full px-3 text-primary h-fit py-1 flex flex-row justify-center hover:bg-primary hover:text-white transition-all duration-200 ${
-                selectedSection === "complete" ? "bg-primary text-white" : ""
+                selectedSection === "completed" ? "bg-primary text-white" : ""
               }`}
             >
               complete
